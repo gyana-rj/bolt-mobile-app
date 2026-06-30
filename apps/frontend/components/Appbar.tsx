@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
 
 export default function Appbar() {
   return (
@@ -11,12 +12,27 @@ export default function Appbar() {
         </span>
       </div>
       <div className="flex items-center space-x-4">
-        <Button variant="ghost" className="text-zinc-400 hover:text-white">
-          Sign In
-        </Button>
-        <Button className="bg-white hover:bg-zinc-200 text-black font-medium">
-          Get Started
-        </Button>
+        <Show when="signed-out">
+          
+          {/* Removed asChild */}
+          <SignInButton mode="modal">
+            <Button variant="ghost" className="text-zinc-400 hover:text-white cursor-pointer">
+              Sign In
+            </Button>
+          </SignInButton>
+          
+          {/* Removed asChild */}
+          <SignUpButton mode="modal">
+            <Button className="bg-white hover:bg-zinc-200 text-black font-medium cursor-pointer">
+              Get Started
+            </Button>
+          </SignUpButton>
+          
+        </Show>
+        
+        <Show when="signed-in">
+          <UserButton />
+        </Show>
       </div>
     </header>
   );

@@ -1,3 +1,4 @@
+import {ClerkProvider} from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en" className="dark">
       {/* Apply the font globally */}
       <body className={`${inter.className} bg-zinc-950 text-zinc-50 antialiased`}>
-        {children}
+        <ClerkProvider>
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );
