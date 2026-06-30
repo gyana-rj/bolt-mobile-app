@@ -131,7 +131,16 @@ exports.Prisma.ProjectScalarFieldEnum = {
   id: 'id',
   description: 'description',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+};
+
+exports.Prisma.PromptScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  projectId: 'projectId'
 };
 
 exports.Prisma.SortOrder = {
@@ -152,7 +161,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Users: 'Users',
-  Project: 'Project'
+  Project: 'Project',
+  Prompt: 'Prompt'
 };
 
 /**

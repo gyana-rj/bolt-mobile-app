@@ -23,6 +23,11 @@ export type Users = $Result.DefaultSelection<Prisma.$UsersPayload>
  * 
  */
 export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
+/**
+ * Model Prompt
+ * 
+ */
+export type Prompt = $Result.DefaultSelection<Prisma.$PromptPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -164,6 +169,16 @@ export class PrismaClient<
     * ```
     */
   get project(): Prisma.ProjectDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.prompt`: Exposes CRUD operations for the **Prompt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Prompts
+    * const prompts = await prisma.prompt.findMany()
+    * ```
+    */
+  get prompt(): Prisma.PromptDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -599,7 +614,8 @@ export namespace Prisma {
 
   export const ModelName: {
     Users: 'Users',
-    Project: 'Project'
+    Project: 'Project',
+    Prompt: 'Prompt'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -615,7 +631,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "project"
+      modelProps: "users" | "project" | "prompt"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -767,6 +783,80 @@ export namespace Prisma {
           }
         }
       }
+      Prompt: {
+        payload: Prisma.$PromptPayload<ExtArgs>
+        fields: Prisma.PromptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PromptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PromptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>
+          }
+          findFirst: {
+            args: Prisma.PromptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PromptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>
+          }
+          findMany: {
+            args: Prisma.PromptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>[]
+          }
+          create: {
+            args: Prisma.PromptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>
+          }
+          createMany: {
+            args: Prisma.PromptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PromptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>[]
+          }
+          delete: {
+            args: Prisma.PromptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>
+          }
+          update: {
+            args: Prisma.PromptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>
+          }
+          deleteMany: {
+            args: Prisma.PromptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PromptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PromptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>[]
+          }
+          upsert: {
+            args: Prisma.PromptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromptPayload>
+          }
+          aggregate: {
+            args: Prisma.PromptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrompt>
+          }
+          groupBy: {
+            args: Prisma.PromptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PromptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PromptCountArgs<ExtArgs>
+            result: $Utils.Optional<PromptCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -877,6 +967,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     users?: UsersOmit
     project?: ProjectOmit
+    prompt?: PromptOmit
   }
 
   /* Types for Logging */
@@ -951,6 +1042,36 @@ export namespace Prisma {
    * Count Types
    */
 
+
+  /**
+   * Count Type ProjectCountOutputType
+   */
+
+  export type ProjectCountOutputType = {
+    prompt: number
+  }
+
+  export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    prompt?: boolean | ProjectCountOutputTypeCountPromptArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectCountOutputType
+     */
+    select?: ProjectCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountPromptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PromptWhereInput
+  }
 
 
   /**
@@ -1959,6 +2080,7 @@ export namespace Prisma {
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userId: string | null
   }
 
   export type ProjectMaxAggregateOutputType = {
@@ -1966,6 +2088,7 @@ export namespace Prisma {
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userId: string | null
   }
 
   export type ProjectCountAggregateOutputType = {
@@ -1973,6 +2096,7 @@ export namespace Prisma {
     description: number
     createdAt: number
     updatedAt: number
+    userId: number
     _all: number
   }
 
@@ -1982,6 +2106,7 @@ export namespace Prisma {
     description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
   }
 
   export type ProjectMaxAggregateInputType = {
@@ -1989,6 +2114,7 @@ export namespace Prisma {
     description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
   }
 
   export type ProjectCountAggregateInputType = {
@@ -1996,6 +2122,7 @@ export namespace Prisma {
     description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
     _all?: true
   }
 
@@ -2076,6 +2203,7 @@ export namespace Prisma {
     description: string | null
     createdAt: Date
     updatedAt: Date
+    userId: string
     _count: ProjectCountAggregateOutputType | null
     _min: ProjectMinAggregateOutputType | null
     _max: ProjectMaxAggregateOutputType | null
@@ -2100,6 +2228,9 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
+    prompt?: boolean | Project$promptArgs<ExtArgs>
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2107,6 +2238,7 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2114,6 +2246,7 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectScalar = {
@@ -2121,18 +2254,28 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "description" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["project"]>
+  export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    prompt?: boolean | Project$promptArgs<ExtArgs>
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $ProjectPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Project"
-    objects: {}
+    objects: {
+      prompt: Prisma.$PromptPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       description: string | null
       createdAt: Date
       updatedAt: Date
+      userId: string
     }, ExtArgs["result"]["project"]>
     composites: {}
   }
@@ -2527,6 +2670,7 @@ export namespace Prisma {
    */
   export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    prompt<T extends Project$promptArgs<ExtArgs> = {}>(args?: Subset<T, Project$promptArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2560,6 +2704,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
+    readonly userId: FieldRef<"Project", 'String'>
   }
     
 
@@ -2576,6 +2721,10 @@ export namespace Prisma {
      * Omit specific fields from the Project
      */
     omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * Filter, which Project to fetch.
      */
@@ -2595,6 +2744,10 @@ export namespace Prisma {
      */
     omit?: ProjectOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
      * Filter, which Project to fetch.
      */
     where: ProjectWhereUniqueInput
@@ -2612,6 +2765,10 @@ export namespace Prisma {
      * Omit specific fields from the Project
      */
     omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * Filter, which Project to fetch.
      */
@@ -2661,6 +2818,10 @@ export namespace Prisma {
      */
     omit?: ProjectOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
      * Filter, which Project to fetch.
      */
     where?: ProjectWhereInput
@@ -2708,6 +2869,10 @@ export namespace Prisma {
      * Omit specific fields from the Project
      */
     omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * Filter, which Projects to fetch.
      */
@@ -2757,6 +2922,10 @@ export namespace Prisma {
      */
     omit?: ProjectOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
      * The data needed to create a Project.
      */
     data: XOR<ProjectCreateInput, ProjectUncheckedCreateInput>
@@ -2804,6 +2973,10 @@ export namespace Prisma {
      * Omit specific fields from the Project
      */
     omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * The data needed to update a Project.
      */
@@ -2871,6 +3044,10 @@ export namespace Prisma {
      */
     omit?: ProjectOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
      * The filter to search for the Project to update in case it exists.
      */
     where: ProjectWhereUniqueInput
@@ -2897,6 +3074,10 @@ export namespace Prisma {
      */
     omit?: ProjectOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
      * Filter which Project to delete.
      */
     where: ProjectWhereUniqueInput
@@ -2917,6 +3098,30 @@ export namespace Prisma {
   }
 
   /**
+   * Project.prompt
+   */
+  export type Project$promptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    where?: PromptWhereInput
+    orderBy?: PromptOrderByWithRelationInput | PromptOrderByWithRelationInput[]
+    cursor?: PromptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PromptScalarFieldEnum | PromptScalarFieldEnum[]
+  }
+
+  /**
    * Project without action
    */
   export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2928,6 +3133,1073 @@ export namespace Prisma {
      * Omit specific fields from the Project
      */
     omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Prompt
+   */
+
+  export type AggregatePrompt = {
+    _count: PromptCountAggregateOutputType | null
+    _min: PromptMinAggregateOutputType | null
+    _max: PromptMaxAggregateOutputType | null
+  }
+
+  export type PromptMinAggregateOutputType = {
+    id: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    projectId: string | null
+  }
+
+  export type PromptMaxAggregateOutputType = {
+    id: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    projectId: string | null
+  }
+
+  export type PromptCountAggregateOutputType = {
+    id: number
+    content: number
+    createdAt: number
+    updatedAt: number
+    projectId: number
+    _all: number
+  }
+
+
+  export type PromptMinAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    projectId?: true
+  }
+
+  export type PromptMaxAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    projectId?: true
+  }
+
+  export type PromptCountAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    projectId?: true
+    _all?: true
+  }
+
+  export type PromptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Prompt to aggregate.
+     */
+    where?: PromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Prompts to fetch.
+     */
+    orderBy?: PromptOrderByWithRelationInput | PromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Prompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Prompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Prompts
+    **/
+    _count?: true | PromptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PromptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PromptMaxAggregateInputType
+  }
+
+  export type GetPromptAggregateType<T extends PromptAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrompt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrompt[P]>
+      : GetScalarType<T[P], AggregatePrompt[P]>
+  }
+
+
+
+
+  export type PromptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PromptWhereInput
+    orderBy?: PromptOrderByWithAggregationInput | PromptOrderByWithAggregationInput[]
+    by: PromptScalarFieldEnum[] | PromptScalarFieldEnum
+    having?: PromptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PromptCountAggregateInputType | true
+    _min?: PromptMinAggregateInputType
+    _max?: PromptMaxAggregateInputType
+  }
+
+  export type PromptGroupByOutputType = {
+    id: string
+    content: string
+    createdAt: Date
+    updatedAt: Date
+    projectId: string
+    _count: PromptCountAggregateOutputType | null
+    _min: PromptMinAggregateOutputType | null
+    _max: PromptMaxAggregateOutputType | null
+  }
+
+  type GetPromptGroupByPayload<T extends PromptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PromptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PromptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PromptGroupByOutputType[P]>
+            : GetScalarType<T[P], PromptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PromptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["prompt"]>
+
+  export type PromptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["prompt"]>
+
+  export type PromptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["prompt"]>
+
+  export type PromptSelectScalar = {
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+  }
+
+  export type PromptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "projectId", ExtArgs["result"]["prompt"]>
+  export type PromptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type PromptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type PromptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+
+  export type $PromptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Prompt"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      content: string
+      createdAt: Date
+      updatedAt: Date
+      projectId: string
+    }, ExtArgs["result"]["prompt"]>
+    composites: {}
+  }
+
+  type PromptGetPayload<S extends boolean | null | undefined | PromptDefaultArgs> = $Result.GetResult<Prisma.$PromptPayload, S>
+
+  type PromptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PromptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PromptCountAggregateInputType | true
+    }
+
+  export interface PromptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Prompt'], meta: { name: 'Prompt' } }
+    /**
+     * Find zero or one Prompt that matches the filter.
+     * @param {PromptFindUniqueArgs} args - Arguments to find a Prompt
+     * @example
+     * // Get one Prompt
+     * const prompt = await prisma.prompt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PromptFindUniqueArgs>(args: SelectSubset<T, PromptFindUniqueArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Prompt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PromptFindUniqueOrThrowArgs} args - Arguments to find a Prompt
+     * @example
+     * // Get one Prompt
+     * const prompt = await prisma.prompt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PromptFindUniqueOrThrowArgs>(args: SelectSubset<T, PromptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Prompt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptFindFirstArgs} args - Arguments to find a Prompt
+     * @example
+     * // Get one Prompt
+     * const prompt = await prisma.prompt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PromptFindFirstArgs>(args?: SelectSubset<T, PromptFindFirstArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Prompt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptFindFirstOrThrowArgs} args - Arguments to find a Prompt
+     * @example
+     * // Get one Prompt
+     * const prompt = await prisma.prompt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PromptFindFirstOrThrowArgs>(args?: SelectSubset<T, PromptFindFirstOrThrowArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Prompts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Prompts
+     * const prompts = await prisma.prompt.findMany()
+     * 
+     * // Get first 10 Prompts
+     * const prompts = await prisma.prompt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const promptWithIdOnly = await prisma.prompt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PromptFindManyArgs>(args?: SelectSubset<T, PromptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Prompt.
+     * @param {PromptCreateArgs} args - Arguments to create a Prompt.
+     * @example
+     * // Create one Prompt
+     * const Prompt = await prisma.prompt.create({
+     *   data: {
+     *     // ... data to create a Prompt
+     *   }
+     * })
+     * 
+     */
+    create<T extends PromptCreateArgs>(args: SelectSubset<T, PromptCreateArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Prompts.
+     * @param {PromptCreateManyArgs} args - Arguments to create many Prompts.
+     * @example
+     * // Create many Prompts
+     * const prompt = await prisma.prompt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PromptCreateManyArgs>(args?: SelectSubset<T, PromptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Prompts and returns the data saved in the database.
+     * @param {PromptCreateManyAndReturnArgs} args - Arguments to create many Prompts.
+     * @example
+     * // Create many Prompts
+     * const prompt = await prisma.prompt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Prompts and only return the `id`
+     * const promptWithIdOnly = await prisma.prompt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PromptCreateManyAndReturnArgs>(args?: SelectSubset<T, PromptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Prompt.
+     * @param {PromptDeleteArgs} args - Arguments to delete one Prompt.
+     * @example
+     * // Delete one Prompt
+     * const Prompt = await prisma.prompt.delete({
+     *   where: {
+     *     // ... filter to delete one Prompt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PromptDeleteArgs>(args: SelectSubset<T, PromptDeleteArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Prompt.
+     * @param {PromptUpdateArgs} args - Arguments to update one Prompt.
+     * @example
+     * // Update one Prompt
+     * const prompt = await prisma.prompt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PromptUpdateArgs>(args: SelectSubset<T, PromptUpdateArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Prompts.
+     * @param {PromptDeleteManyArgs} args - Arguments to filter Prompts to delete.
+     * @example
+     * // Delete a few Prompts
+     * const { count } = await prisma.prompt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PromptDeleteManyArgs>(args?: SelectSubset<T, PromptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Prompts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Prompts
+     * const prompt = await prisma.prompt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PromptUpdateManyArgs>(args: SelectSubset<T, PromptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Prompts and returns the data updated in the database.
+     * @param {PromptUpdateManyAndReturnArgs} args - Arguments to update many Prompts.
+     * @example
+     * // Update many Prompts
+     * const prompt = await prisma.prompt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Prompts and only return the `id`
+     * const promptWithIdOnly = await prisma.prompt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PromptUpdateManyAndReturnArgs>(args: SelectSubset<T, PromptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Prompt.
+     * @param {PromptUpsertArgs} args - Arguments to update or create a Prompt.
+     * @example
+     * // Update or create a Prompt
+     * const prompt = await prisma.prompt.upsert({
+     *   create: {
+     *     // ... data to create a Prompt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Prompt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PromptUpsertArgs>(args: SelectSubset<T, PromptUpsertArgs<ExtArgs>>): Prisma__PromptClient<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Prompts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptCountArgs} args - Arguments to filter Prompts to count.
+     * @example
+     * // Count the number of Prompts
+     * const count = await prisma.prompt.count({
+     *   where: {
+     *     // ... the filter for the Prompts we want to count
+     *   }
+     * })
+    **/
+    count<T extends PromptCountArgs>(
+      args?: Subset<T, PromptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PromptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Prompt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PromptAggregateArgs>(args: Subset<T, PromptAggregateArgs>): Prisma.PrismaPromise<GetPromptAggregateType<T>>
+
+    /**
+     * Group by Prompt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PromptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PromptGroupByArgs['orderBy'] }
+        : { orderBy?: PromptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PromptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPromptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Prompt model
+   */
+  readonly fields: PromptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Prompt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PromptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Prompt model
+   */
+  interface PromptFieldRefs {
+    readonly id: FieldRef<"Prompt", 'String'>
+    readonly content: FieldRef<"Prompt", 'String'>
+    readonly createdAt: FieldRef<"Prompt", 'DateTime'>
+    readonly updatedAt: FieldRef<"Prompt", 'DateTime'>
+    readonly projectId: FieldRef<"Prompt", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Prompt findUnique
+   */
+  export type PromptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * Filter, which Prompt to fetch.
+     */
+    where: PromptWhereUniqueInput
+  }
+
+  /**
+   * Prompt findUniqueOrThrow
+   */
+  export type PromptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * Filter, which Prompt to fetch.
+     */
+    where: PromptWhereUniqueInput
+  }
+
+  /**
+   * Prompt findFirst
+   */
+  export type PromptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * Filter, which Prompt to fetch.
+     */
+    where?: PromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Prompts to fetch.
+     */
+    orderBy?: PromptOrderByWithRelationInput | PromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Prompts.
+     */
+    cursor?: PromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Prompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Prompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Prompts.
+     */
+    distinct?: PromptScalarFieldEnum | PromptScalarFieldEnum[]
+  }
+
+  /**
+   * Prompt findFirstOrThrow
+   */
+  export type PromptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * Filter, which Prompt to fetch.
+     */
+    where?: PromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Prompts to fetch.
+     */
+    orderBy?: PromptOrderByWithRelationInput | PromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Prompts.
+     */
+    cursor?: PromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Prompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Prompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Prompts.
+     */
+    distinct?: PromptScalarFieldEnum | PromptScalarFieldEnum[]
+  }
+
+  /**
+   * Prompt findMany
+   */
+  export type PromptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * Filter, which Prompts to fetch.
+     */
+    where?: PromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Prompts to fetch.
+     */
+    orderBy?: PromptOrderByWithRelationInput | PromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Prompts.
+     */
+    cursor?: PromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Prompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Prompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Prompts.
+     */
+    distinct?: PromptScalarFieldEnum | PromptScalarFieldEnum[]
+  }
+
+  /**
+   * Prompt create
+   */
+  export type PromptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Prompt.
+     */
+    data: XOR<PromptCreateInput, PromptUncheckedCreateInput>
+  }
+
+  /**
+   * Prompt createMany
+   */
+  export type PromptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Prompts.
+     */
+    data: PromptCreateManyInput | PromptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Prompt createManyAndReturn
+   */
+  export type PromptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * The data used to create many Prompts.
+     */
+    data: PromptCreateManyInput | PromptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Prompt update
+   */
+  export type PromptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Prompt.
+     */
+    data: XOR<PromptUpdateInput, PromptUncheckedUpdateInput>
+    /**
+     * Choose, which Prompt to update.
+     */
+    where: PromptWhereUniqueInput
+  }
+
+  /**
+   * Prompt updateMany
+   */
+  export type PromptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Prompts.
+     */
+    data: XOR<PromptUpdateManyMutationInput, PromptUncheckedUpdateManyInput>
+    /**
+     * Filter which Prompts to update
+     */
+    where?: PromptWhereInput
+    /**
+     * Limit how many Prompts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Prompt updateManyAndReturn
+   */
+  export type PromptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * The data used to update Prompts.
+     */
+    data: XOR<PromptUpdateManyMutationInput, PromptUncheckedUpdateManyInput>
+    /**
+     * Filter which Prompts to update
+     */
+    where?: PromptWhereInput
+    /**
+     * Limit how many Prompts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Prompt upsert
+   */
+  export type PromptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Prompt to update in case it exists.
+     */
+    where: PromptWhereUniqueInput
+    /**
+     * In case the Prompt found by the `where` argument doesn't exist, create a new Prompt with this data.
+     */
+    create: XOR<PromptCreateInput, PromptUncheckedCreateInput>
+    /**
+     * In case the Prompt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PromptUpdateInput, PromptUncheckedUpdateInput>
+  }
+
+  /**
+   * Prompt delete
+   */
+  export type PromptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
+    /**
+     * Filter which Prompt to delete.
+     */
+    where: PromptWhereUniqueInput
+  }
+
+  /**
+   * Prompt deleteMany
+   */
+  export type PromptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Prompts to delete
+     */
+    where?: PromptWhereInput
+    /**
+     * Limit how many Prompts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Prompt without action
+   */
+  export type PromptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prompt
+     */
+    select?: PromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prompt
+     */
+    omit?: PromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PromptInclude<ExtArgs> | null
   }
 
 
@@ -2959,10 +4231,22 @@ export namespace Prisma {
     id: 'id',
     description: 'description',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    userId: 'userId'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+  export const PromptScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    projectId: 'projectId'
+  };
+
+  export type PromptScalarFieldEnum = (typeof PromptScalarFieldEnum)[keyof typeof PromptScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3094,6 +4378,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
+    userId?: StringFilter<"Project"> | string
+    prompt?: PromptListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -3101,6 +4387,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
+    prompt?: PromptOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -3111,6 +4399,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
+    userId?: StringFilter<"Project"> | string
+    prompt?: PromptListRelationFilter
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -3118,6 +4408,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
     _min?: ProjectMinOrderByAggregateInput
@@ -3131,6 +4422,62 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Project"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+    userId?: StringWithAggregatesFilter<"Project"> | string
+  }
+
+  export type PromptWhereInput = {
+    AND?: PromptWhereInput | PromptWhereInput[]
+    OR?: PromptWhereInput[]
+    NOT?: PromptWhereInput | PromptWhereInput[]
+    id?: StringFilter<"Prompt"> | string
+    content?: StringFilter<"Prompt"> | string
+    createdAt?: DateTimeFilter<"Prompt"> | Date | string
+    updatedAt?: DateTimeFilter<"Prompt"> | Date | string
+    projectId?: StringFilter<"Prompt"> | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }
+
+  export type PromptOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+  }
+
+  export type PromptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PromptWhereInput | PromptWhereInput[]
+    OR?: PromptWhereInput[]
+    NOT?: PromptWhereInput | PromptWhereInput[]
+    content?: StringFilter<"Prompt"> | string
+    createdAt?: DateTimeFilter<"Prompt"> | Date | string
+    updatedAt?: DateTimeFilter<"Prompt"> | Date | string
+    projectId?: StringFilter<"Prompt"> | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }, "id">
+
+  export type PromptOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    _count?: PromptCountOrderByAggregateInput
+    _max?: PromptMaxOrderByAggregateInput
+    _min?: PromptMinOrderByAggregateInput
+  }
+
+  export type PromptScalarWhereWithAggregatesInput = {
+    AND?: PromptScalarWhereWithAggregatesInput | PromptScalarWhereWithAggregatesInput[]
+    OR?: PromptScalarWhereWithAggregatesInput[]
+    NOT?: PromptScalarWhereWithAggregatesInput | PromptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Prompt"> | string
+    content?: StringWithAggregatesFilter<"Prompt"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Prompt"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Prompt"> | Date | string
+    projectId?: StringWithAggregatesFilter<"Prompt"> | string
   }
 
   export type UsersCreateInput = {
@@ -3187,6 +4534,8 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
+    prompt?: PromptCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -3194,6 +4543,8 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
+    prompt?: PromptUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -3201,6 +4552,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    prompt?: PromptUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -3208,6 +4561,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    prompt?: PromptUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -3215,6 +4570,7 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
   }
 
   export type ProjectUpdateManyMutationInput = {
@@ -3222,6 +4578,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateManyInput = {
@@ -3229,6 +4586,62 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PromptCreateInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    project: ProjectCreateNestedOneWithoutPromptInput
+  }
+
+  export type PromptUncheckedCreateInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectId: string
+  }
+
+  export type PromptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutPromptNestedInput
+  }
+
+  export type PromptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PromptCreateManyInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectId: string
+  }
+
+  export type PromptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -3325,9 +4738,19 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type PromptListRelationFilter = {
+    every?: PromptWhereInput
+    some?: PromptWhereInput
+    none?: PromptWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type PromptOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ProjectCountOrderByAggregateInput = {
@@ -3335,6 +4758,7 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
@@ -3342,6 +4766,7 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
@@ -3349,6 +4774,7 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -3369,6 +4795,35 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type ProjectScalarRelationFilter = {
+    is?: ProjectWhereInput
+    isNot?: ProjectWhereInput
+  }
+
+  export type PromptCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+  }
+
+  export type PromptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+  }
+
+  export type PromptMinOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -3377,8 +4832,64 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type PromptCreateNestedManyWithoutProjectInput = {
+    create?: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput> | PromptCreateWithoutProjectInput[] | PromptUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PromptCreateOrConnectWithoutProjectInput | PromptCreateOrConnectWithoutProjectInput[]
+    createMany?: PromptCreateManyProjectInputEnvelope
+    connect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+  }
+
+  export type PromptUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput> | PromptCreateWithoutProjectInput[] | PromptUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PromptCreateOrConnectWithoutProjectInput | PromptCreateOrConnectWithoutProjectInput[]
+    createMany?: PromptCreateManyProjectInputEnvelope
+    connect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type PromptUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput> | PromptCreateWithoutProjectInput[] | PromptUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PromptCreateOrConnectWithoutProjectInput | PromptCreateOrConnectWithoutProjectInput[]
+    upsert?: PromptUpsertWithWhereUniqueWithoutProjectInput | PromptUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: PromptCreateManyProjectInputEnvelope
+    set?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    disconnect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    delete?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    connect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    update?: PromptUpdateWithWhereUniqueWithoutProjectInput | PromptUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: PromptUpdateManyWithWhereWithoutProjectInput | PromptUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: PromptScalarWhereInput | PromptScalarWhereInput[]
+  }
+
+  export type PromptUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput> | PromptCreateWithoutProjectInput[] | PromptUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PromptCreateOrConnectWithoutProjectInput | PromptCreateOrConnectWithoutProjectInput[]
+    upsert?: PromptUpsertWithWhereUniqueWithoutProjectInput | PromptUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: PromptCreateManyProjectInputEnvelope
+    set?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    disconnect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    delete?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    connect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+    update?: PromptUpdateWithWhereUniqueWithoutProjectInput | PromptUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: PromptUpdateManyWithWhereWithoutProjectInput | PromptUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: PromptScalarWhereInput | PromptScalarWhereInput[]
+  }
+
+  export type ProjectCreateNestedOneWithoutPromptInput = {
+    create?: XOR<ProjectCreateWithoutPromptInput, ProjectUncheckedCreateWithoutPromptInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutPromptInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type ProjectUpdateOneRequiredWithoutPromptNestedInput = {
+    create?: XOR<ProjectCreateWithoutPromptInput, ProjectUncheckedCreateWithoutPromptInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutPromptInput
+    upsert?: ProjectUpsertWithoutPromptInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutPromptInput, ProjectUpdateWithoutPromptInput>, ProjectUncheckedUpdateWithoutPromptInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -3488,6 +4999,133 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type PromptCreateWithoutProjectInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PromptUncheckedCreateWithoutProjectInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PromptCreateOrConnectWithoutProjectInput = {
+    where: PromptWhereUniqueInput
+    create: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput>
+  }
+
+  export type PromptCreateManyProjectInputEnvelope = {
+    data: PromptCreateManyProjectInput | PromptCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PromptUpsertWithWhereUniqueWithoutProjectInput = {
+    where: PromptWhereUniqueInput
+    update: XOR<PromptUpdateWithoutProjectInput, PromptUncheckedUpdateWithoutProjectInput>
+    create: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput>
+  }
+
+  export type PromptUpdateWithWhereUniqueWithoutProjectInput = {
+    where: PromptWhereUniqueInput
+    data: XOR<PromptUpdateWithoutProjectInput, PromptUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type PromptUpdateManyWithWhereWithoutProjectInput = {
+    where: PromptScalarWhereInput
+    data: XOR<PromptUpdateManyMutationInput, PromptUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type PromptScalarWhereInput = {
+    AND?: PromptScalarWhereInput | PromptScalarWhereInput[]
+    OR?: PromptScalarWhereInput[]
+    NOT?: PromptScalarWhereInput | PromptScalarWhereInput[]
+    id?: StringFilter<"Prompt"> | string
+    content?: StringFilter<"Prompt"> | string
+    createdAt?: DateTimeFilter<"Prompt"> | Date | string
+    updatedAt?: DateTimeFilter<"Prompt"> | Date | string
+    projectId?: StringFilter<"Prompt"> | string
+  }
+
+  export type ProjectCreateWithoutPromptInput = {
+    id?: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+  }
+
+  export type ProjectUncheckedCreateWithoutPromptInput = {
+    id?: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+  }
+
+  export type ProjectCreateOrConnectWithoutPromptInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutPromptInput, ProjectUncheckedCreateWithoutPromptInput>
+  }
+
+  export type ProjectUpsertWithoutPromptInput = {
+    update: XOR<ProjectUpdateWithoutPromptInput, ProjectUncheckedUpdateWithoutPromptInput>
+    create: XOR<ProjectCreateWithoutPromptInput, ProjectUncheckedCreateWithoutPromptInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutPromptInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutPromptInput, ProjectUncheckedUpdateWithoutPromptInput>
+  }
+
+  export type ProjectUpdateWithoutPromptInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ProjectUncheckedUpdateWithoutPromptInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PromptCreateManyProjectInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PromptUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromptUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromptUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

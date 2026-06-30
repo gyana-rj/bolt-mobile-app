@@ -1,10 +1,10 @@
 {
-  "name": "@repo/db",
+  "name": "@bolt/db",
   "module": "index.ts",
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./index.ts"
+    "./client": "./index.ts"
   },
   "scripts": {
     "db:generate": "prisma generate",
