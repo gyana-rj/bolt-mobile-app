@@ -1,26 +1,19 @@
 {
-  "name": "backend",
+  "name": "worker",
   "module": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
     "@types/bun": "latest"
   },
-  "scripts": {
-    "dev": "bun --watch index.ts",
-    "start": "bun index.ts",
-    "build": "bun build ./index.ts --outdir ./dist --target bun"
-  },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "@bolt/db": "*",
-    "@clerk/backend": "^3.8.5",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "@bolt/db": "*"
   }
 }

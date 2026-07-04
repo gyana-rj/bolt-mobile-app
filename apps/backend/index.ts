@@ -8,7 +8,13 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/project", authMiddleware, async(req, res) => {
-    const { prompt } = req.body;
+    const prompt = String(req.body.prompt ?? "").trim();
+
+    if (!prompt) {
+        res.status(400).json({ message: "Prompt is required" });
+        return;
+    }
+
     const userId = req.userId!;
     // add logic to get a useful name for the project from the prompt
     const description = prompt.split("\n")[0];
@@ -31,6 +37,6 @@ app.get("/projects", authMiddleware, async(req, res) => {
     res.json(project)
 })
 
-app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+app.listen(8080, () => {
+    console.log("Server is running on port 8080");
 });

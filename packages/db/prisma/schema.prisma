@@ -26,8 +26,14 @@ model Project {
 model Prompt {
   id          String          @id      @default(uuid())
   content     String
+  type        PromptType
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   projectId   String
   project     Project         @relation(fields: [projectId], references: [id])
+}
+
+enum PromptType{
+  USER
+  SYSTEM
 }

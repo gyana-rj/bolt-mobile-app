@@ -30,6 +30,23 @@ export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
 export type Prompt = $Result.DefaultSelection<Prisma.$PromptPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const PromptType: {
+  USER: 'USER',
+  SYSTEM: 'SYSTEM'
+};
+
+export type PromptType = (typeof PromptType)[keyof typeof PromptType]
+
+}
+
+export type PromptType = $Enums.PromptType
+
+export const PromptType: typeof $Enums.PromptType
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -3153,6 +3170,7 @@ export namespace Prisma {
   export type PromptMinAggregateOutputType = {
     id: string | null
     content: string | null
+    type: $Enums.PromptType | null
     createdAt: Date | null
     updatedAt: Date | null
     projectId: string | null
@@ -3161,6 +3179,7 @@ export namespace Prisma {
   export type PromptMaxAggregateOutputType = {
     id: string | null
     content: string | null
+    type: $Enums.PromptType | null
     createdAt: Date | null
     updatedAt: Date | null
     projectId: string | null
@@ -3169,6 +3188,7 @@ export namespace Prisma {
   export type PromptCountAggregateOutputType = {
     id: number
     content: number
+    type: number
     createdAt: number
     updatedAt: number
     projectId: number
@@ -3179,6 +3199,7 @@ export namespace Prisma {
   export type PromptMinAggregateInputType = {
     id?: true
     content?: true
+    type?: true
     createdAt?: true
     updatedAt?: true
     projectId?: true
@@ -3187,6 +3208,7 @@ export namespace Prisma {
   export type PromptMaxAggregateInputType = {
     id?: true
     content?: true
+    type?: true
     createdAt?: true
     updatedAt?: true
     projectId?: true
@@ -3195,6 +3217,7 @@ export namespace Prisma {
   export type PromptCountAggregateInputType = {
     id?: true
     content?: true
+    type?: true
     createdAt?: true
     updatedAt?: true
     projectId?: true
@@ -3276,6 +3299,7 @@ export namespace Prisma {
   export type PromptGroupByOutputType = {
     id: string
     content: string
+    type: $Enums.PromptType
     createdAt: Date
     updatedAt: Date
     projectId: string
@@ -3301,6 +3325,7 @@ export namespace Prisma {
   export type PromptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     content?: boolean
+    type?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     projectId?: boolean
@@ -3310,6 +3335,7 @@ export namespace Prisma {
   export type PromptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     content?: boolean
+    type?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     projectId?: boolean
@@ -3319,6 +3345,7 @@ export namespace Prisma {
   export type PromptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     content?: boolean
+    type?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     projectId?: boolean
@@ -3328,12 +3355,13 @@ export namespace Prisma {
   export type PromptSelectScalar = {
     id?: boolean
     content?: boolean
+    type?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     projectId?: boolean
   }
 
-  export type PromptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "projectId", ExtArgs["result"]["prompt"]>
+  export type PromptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "type" | "createdAt" | "updatedAt" | "projectId", ExtArgs["result"]["prompt"]>
   export type PromptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
   }
@@ -3352,6 +3380,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       content: string
+      type: $Enums.PromptType
       createdAt: Date
       updatedAt: Date
       projectId: string
@@ -3781,6 +3810,7 @@ export namespace Prisma {
   interface PromptFieldRefs {
     readonly id: FieldRef<"Prompt", 'String'>
     readonly content: FieldRef<"Prompt", 'String'>
+    readonly type: FieldRef<"Prompt", 'PromptType'>
     readonly createdAt: FieldRef<"Prompt", 'DateTime'>
     readonly updatedAt: FieldRef<"Prompt", 'DateTime'>
     readonly projectId: FieldRef<"Prompt", 'String'>
@@ -4241,6 +4271,7 @@ export namespace Prisma {
   export const PromptScalarFieldEnum: {
     id: 'id',
     content: 'content',
+    type: 'type',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     projectId: 'projectId'
@@ -4303,6 +4334,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PromptType'
+   */
+  export type EnumPromptTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PromptType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PromptType[]'
+   */
+  export type ListEnumPromptTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PromptType[]'>
     
 
 
@@ -4431,6 +4476,7 @@ export namespace Prisma {
     NOT?: PromptWhereInput | PromptWhereInput[]
     id?: StringFilter<"Prompt"> | string
     content?: StringFilter<"Prompt"> | string
+    type?: EnumPromptTypeFilter<"Prompt"> | $Enums.PromptType
     createdAt?: DateTimeFilter<"Prompt"> | Date | string
     updatedAt?: DateTimeFilter<"Prompt"> | Date | string
     projectId?: StringFilter<"Prompt"> | string
@@ -4440,6 +4486,7 @@ export namespace Prisma {
   export type PromptOrderByWithRelationInput = {
     id?: SortOrder
     content?: SortOrder
+    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     projectId?: SortOrder
@@ -4452,6 +4499,7 @@ export namespace Prisma {
     OR?: PromptWhereInput[]
     NOT?: PromptWhereInput | PromptWhereInput[]
     content?: StringFilter<"Prompt"> | string
+    type?: EnumPromptTypeFilter<"Prompt"> | $Enums.PromptType
     createdAt?: DateTimeFilter<"Prompt"> | Date | string
     updatedAt?: DateTimeFilter<"Prompt"> | Date | string
     projectId?: StringFilter<"Prompt"> | string
@@ -4461,6 +4509,7 @@ export namespace Prisma {
   export type PromptOrderByWithAggregationInput = {
     id?: SortOrder
     content?: SortOrder
+    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     projectId?: SortOrder
@@ -4475,6 +4524,7 @@ export namespace Prisma {
     NOT?: PromptScalarWhereWithAggregatesInput | PromptScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Prompt"> | string
     content?: StringWithAggregatesFilter<"Prompt"> | string
+    type?: EnumPromptTypeWithAggregatesFilter<"Prompt"> | $Enums.PromptType
     createdAt?: DateTimeWithAggregatesFilter<"Prompt"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Prompt"> | Date | string
     projectId?: StringWithAggregatesFilter<"Prompt"> | string
@@ -4592,6 +4642,7 @@ export namespace Prisma {
   export type PromptCreateInput = {
     id?: string
     content: string
+    type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
     project: ProjectCreateNestedOneWithoutPromptInput
@@ -4600,6 +4651,7 @@ export namespace Prisma {
   export type PromptUncheckedCreateInput = {
     id?: string
     content: string
+    type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
     projectId: string
@@ -4608,6 +4660,7 @@ export namespace Prisma {
   export type PromptUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutPromptNestedInput
@@ -4616,6 +4669,7 @@ export namespace Prisma {
   export type PromptUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
@@ -4624,6 +4678,7 @@ export namespace Prisma {
   export type PromptCreateManyInput = {
     id?: string
     content: string
+    type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
     projectId: string
@@ -4632,6 +4687,7 @@ export namespace Prisma {
   export type PromptUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4639,6 +4695,7 @@ export namespace Prisma {
   export type PromptUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
@@ -4795,6 +4852,13 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type EnumPromptTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PromptType | EnumPromptTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPromptTypeFilter<$PrismaModel> | $Enums.PromptType
+  }
+
   export type ProjectScalarRelationFilter = {
     is?: ProjectWhereInput
     isNot?: ProjectWhereInput
@@ -4803,6 +4867,7 @@ export namespace Prisma {
   export type PromptCountOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
+    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     projectId?: SortOrder
@@ -4811,6 +4876,7 @@ export namespace Prisma {
   export type PromptMaxOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
+    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     projectId?: SortOrder
@@ -4819,9 +4885,20 @@ export namespace Prisma {
   export type PromptMinOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
+    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     projectId?: SortOrder
+  }
+
+  export type EnumPromptTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PromptType | EnumPromptTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPromptTypeWithAggregatesFilter<$PrismaModel> | $Enums.PromptType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPromptTypeFilter<$PrismaModel>
+    _max?: NestedEnumPromptTypeFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -4882,6 +4959,10 @@ export namespace Prisma {
     create?: XOR<ProjectCreateWithoutPromptInput, ProjectUncheckedCreateWithoutPromptInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutPromptInput
     connect?: ProjectWhereUniqueInput
+  }
+
+  export type EnumPromptTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PromptType
   }
 
   export type ProjectUpdateOneRequiredWithoutPromptNestedInput = {
@@ -5001,9 +5082,27 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumPromptTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PromptType | EnumPromptTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPromptTypeFilter<$PrismaModel> | $Enums.PromptType
+  }
+
+  export type NestedEnumPromptTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PromptType | EnumPromptTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PromptType[] | ListEnumPromptTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPromptTypeWithAggregatesFilter<$PrismaModel> | $Enums.PromptType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPromptTypeFilter<$PrismaModel>
+    _max?: NestedEnumPromptTypeFilter<$PrismaModel>
+  }
+
   export type PromptCreateWithoutProjectInput = {
     id?: string
     content: string
+    type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5011,6 +5110,7 @@ export namespace Prisma {
   export type PromptUncheckedCreateWithoutProjectInput = {
     id?: string
     content: string
+    type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5047,6 +5147,7 @@ export namespace Prisma {
     NOT?: PromptScalarWhereInput | PromptScalarWhereInput[]
     id?: StringFilter<"Prompt"> | string
     content?: StringFilter<"Prompt"> | string
+    type?: EnumPromptTypeFilter<"Prompt"> | $Enums.PromptType
     createdAt?: DateTimeFilter<"Prompt"> | Date | string
     updatedAt?: DateTimeFilter<"Prompt"> | Date | string
     projectId?: StringFilter<"Prompt"> | string
@@ -5103,6 +5204,7 @@ export namespace Prisma {
   export type PromptCreateManyProjectInput = {
     id?: string
     content: string
+    type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5110,6 +5212,7 @@ export namespace Prisma {
   export type PromptUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5117,6 +5220,7 @@ export namespace Prisma {
   export type PromptUncheckedUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5124,6 +5228,7 @@ export namespace Prisma {
   export type PromptUncheckedUpdateManyWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

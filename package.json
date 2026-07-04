@@ -27,6 +27,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "openai": "^6.45.0",
     "redis": "^6.0.1"
   }
 }

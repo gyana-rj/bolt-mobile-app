@@ -138,6 +138,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
 exports.Prisma.PromptScalarFieldEnum = {
   id: 'id',
   content: 'content',
+  type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   projectId: 'projectId'
@@ -157,7 +158,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.PromptType = exports.$Enums.PromptType = {
+  USER: 'USER',
+  SYSTEM: 'SYSTEM'
+};
 
 exports.Prisma.ModelName = {
   Users: 'Users',
