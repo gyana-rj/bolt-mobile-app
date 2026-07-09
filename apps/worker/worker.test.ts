@@ -43,4 +43,19 @@ test("Action with append", () => {
     });
 
     artifactProcessor.parse();
+
+    artifactProcessor.append(`
+        <boltAction type="shell">
+        npm run start
+        </boltAction>    
+    `);
+    artifactProcessor.parse();
+    artifactProcessor.parse();
+    artifactProcessor.append(`
+        <boltAction type="file" filePath="src/index.js">
+        console.log("Hello, world!");
+        </boltAction>    
+    `);
+    artifactProcessor.parse();
+    expect(artifactProcessor.currentArtifact).not.toContain("<boltAction>");
 })
