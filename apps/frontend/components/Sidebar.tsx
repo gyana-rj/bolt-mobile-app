@@ -1,90 +1,267 @@
 "use client";
 
-import { MessageSquare, Search, LogOut } from "lucide-react";
-import { SignOutButton } from "@clerk/nextjs";
-import { useState } from "react";
+import { BACKEND_URL } from "@/config";
+import { SignOutButton, useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import { LogOut, MessageSquare, Search } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+
+type Project = {
+  id: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+function titleCase(value: string) {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function getProjectName(project: Project) {
+  const rawName = project.description?.trim();
+
+  if (!rawName) {
+    return `Project ${project.id.slice(0, 8)}`;
+  }
+
+  return titleCase(rawName).slice(0, 48);
+}
+
+function getProjectDate(project: Project) {
+  const date = new Date(project.createdAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Recent projects";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
 
 export default function Sidebar() {
+  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
-
   const [isHovered, setIsHovered] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const projects = [
-    { id: 1, name: "asdasd" },
-    { id: 2, name: "asdasd" },
-    { id: 3, name: "asdasd" },
-    { id: 4, name: "asdasd" },
-    { id: 5, name: "asdasd" },
-    { id: 6, name: "asdasd" },
-  ];
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn) {
+      setProjects([]);
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    async function loadProjects() {
+      try {
+        const token = await getToken();
+
+        if (!token) {
+          return;
+        }
+
+        const response = await axios.get<{ projects: Project[] }>(
+          `${BACKEND_URL}/projects`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (isMounted) {
+          setProjects(response.data.projects ?? []);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setProjects([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [getToken, isLoaded, isSignedIn]);
+
+  const filteredProjects = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return projects;
+    }
+
+    return projects.filter((project) =>
+      getProjectName(project).toLowerCase().includes(query),
+    );
+  }, [projects, searchQuery]);
+
+  const groupedProjects = useMemo(() => {
+    return filteredProjects.reduce<Record<string, Project[]>>(
+      (groups, project) => {
+        const date = getProjectDate(project);
+        groups[date] = groups[date] ?? [];
+        groups[date].push(project);
+        return groups;
+      },
+      {},
+    );
+  }, [filteredProjects]);
 
   return (
-    <aside 
+    <aside
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`h-screen bg-[#0A0A0A] border-r border-zinc-800 flex flex-col py-3 transition-all duration-300 ease-in-out shrink-0 overflow-hidden relative z-50 ${
+      className={`relative z-50 flex h-screen shrink-0 flex-col overflow-hidden border-r border-zinc-800 bg-[#0A0A0A] py-3 transition-all duration-300 ease-in-out ${
         isHovered ? "w-[260px] px-3" : "w-[60px] px-2"
       }`}
     >
-      
-      {/* Start New Project Button */}
-      <button className={`flex items-center gap-3 py-2.5 rounded-lg hover:bg-zinc-800/80 transition-colors w-full text-sm font-medium whitespace-nowrap ${isHovered ? "px-3" : "justify-center px-0"}`}>
-        <MessageSquare className="w-5 h-5 shrink-0" />
-        <span className={`transition-opacity duration-300 ${isHovered ? "opacity-100 block" : "opacity-0 hidden"}`}>
+      <button
+        onClick={() => router.push("/")}
+        className={`flex w-full items-center gap-3 rounded-lg py-2.5 text-sm font-medium whitespace-nowrap transition-colors hover:bg-zinc-800/80 ${
+          isHovered ? "px-3" : "justify-center px-0"
+        }`}
+        type="button"
+      >
+        <MessageSquare className="h-5 w-5 shrink-0" />
+        <span
+          className={`transition-opacity duration-300 ${
+            isHovered ? "block opacity-100" : "hidden opacity-0"
+          }`}
+        >
           Start new project
         </span>
       </button>
 
-      {/* Projects Section */}
-      <div className="mt-6 flex-1 flex flex-col overflow-hidden">
-        <h2 className={`text-xs font-semibold text-zinc-400 mb-3 whitespace-nowrap transition-opacity duration-300 ${isHovered ? "opacity-100 px-3" : "opacity-0 hidden"}`}>
+      <div className="mt-6 flex flex-1 flex-col overflow-hidden">
+        <h2
+          className={`mb-3 text-xs font-semibold text-zinc-400 whitespace-nowrap transition-opacity duration-300 ${
+            isHovered ? "px-3 opacity-100" : "hidden opacity-0"
+          }`}
+        >
           Your projects
         </h2>
-        
-        {/* Search Bar */}
-        <div className={`mb-4 relative transition-opacity duration-300 ${isHovered ? "opacity-100 block px-3" : "opacity-0 hidden"}`}>
-          <Search className="w-4 h-4 absolute left-6 top-1/2 -translate-y-1/2 text-zinc-500" />
-          <input 
-            type="text" 
-            placeholder="Search" 
+
+        <div
+          className={`relative mb-4 transition-opacity duration-300 ${
+            isHovered ? "block px-3 opacity-100" : "hidden opacity-0"
+          }`}
+        >
+          <Search className="absolute top-1/2 left-6 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+          <input
+            type="text"
+            placeholder="Search"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#141414] border border-zinc-800 rounded-lg pl-9 pr-3 py-1.5 text-sm focus:outline-none focus:border-zinc-700 transition-colors text-zinc-200 placeholder-zinc-500"
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className="w-full rounded-lg border border-zinc-800 bg-[#141414] py-1.5 pr-3 pl-9 text-sm text-zinc-200 transition-colors placeholder-zinc-500 focus:border-zinc-700 focus:outline-none"
           />
         </div>
 
-        {/* Project List */}
-        <div className="flex-1 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-          <div>
-            {/* Date Group Header */}
-            <h3 className={`text-[11px] font-medium text-zinc-500 mb-2 whitespace-nowrap transition-opacity duration-300 ${isHovered ? "opacity-100 px-4" : "opacity-0 hidden"}`}>
-              February 28, 2025
-            </h3>
-            
-            {/* Project Items */}
-            <div className="flex flex-col space-y-0.5">
-              {projects.map((project) => (
-                <button 
-                  key={project.id} 
-                  className={`flex items-center gap-3 py-2 rounded-md hover:bg-zinc-800/60 transition-colors w-full text-left group border border-transparent hover:border-zinc-800/50 ${isHovered ? "px-2 mx-1" : "justify-center px-0 mx-0"}`}
-                >
-                  <MessageSquare className="w-4 h-4 shrink-0 text-zinc-500 group-hover:text-zinc-400" />
-                  <span className={`text-sm text-zinc-400 group-hover:text-zinc-200 truncate transition-opacity duration-300 ${isHovered ? "opacity-100 block" : "opacity-0 hidden"}`}>
-                    {project.name}
-                  </span>
-                </button>
+        <div className="flex-1 space-y-4 overflow-y-auto">
+          {isLoading ? (
+            <div className="space-y-2 px-2">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-9 animate-pulse rounded-md bg-zinc-900"
+                />
               ))}
             </div>
-          </div>
+          ) : filteredProjects.length === 0 ? (
+            <p
+              className={`text-sm text-zinc-500 ${
+                isHovered ? "px-3" : "sr-only"
+              }`}
+            >
+              No projects yet.
+            </p>
+          ) : (
+            Object.entries(groupedProjects).map(([date, dateProjects]) => (
+              <div key={date}>
+                <h3
+                  className={`mb-2 text-[11px] font-medium text-zinc-500 whitespace-nowrap transition-opacity duration-300 ${
+                    isHovered ? "px-4 opacity-100" : "hidden opacity-0"
+                  }`}
+                >
+                  {date}
+                </h3>
+
+                <div className="flex flex-col space-y-0.5">
+                  {dateProjects.map((project) => {
+                    const isActive = pathname === `/project/${project.id}`;
+
+                    return (
+                      <button
+                        key={project.id}
+                        onClick={() => router.push(`/project/${project.id}`)}
+                        className={`group flex w-full items-center gap-3 rounded-md border py-2 text-left transition-colors ${
+                          isActive
+                            ? "border-zinc-800 bg-zinc-800/80"
+                            : "border-transparent hover:border-zinc-800/50 hover:bg-zinc-800/60"
+                        } ${isHovered ? "mx-1 px-2" : "mx-0 justify-center px-0"}`}
+                        title={getProjectName(project)}
+                        type="button"
+                      >
+                        <MessageSquare className="h-4 w-4 shrink-0 text-zinc-500 group-hover:text-zinc-400" />
+                        <span
+                          className={`truncate text-sm transition-opacity duration-300 ${
+                            isActive
+                              ? "text-zinc-100"
+                              : "text-zinc-400 group-hover:text-zinc-200"
+                          } ${isHovered ? "block opacity-100" : "hidden opacity-0"}`}
+                        >
+                          {getProjectName(project)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Logout Section */}
-      <div className={`mt-auto pt-4 border-t border-zinc-800/50 pb-2 ${isHovered ? "px-2" : "px-0"}`}>
+      <div
+        className={`mt-auto border-t border-zinc-800/50 pt-4 pb-2 ${
+          isHovered ? "px-2" : "px-0"
+        }`}
+      >
         <SignOutButton>
-          <button className={`flex items-center gap-3 py-2 rounded-lg hover:bg-zinc-800/60 transition-colors w-full text-sm font-medium text-zinc-400 hover:text-zinc-200 whitespace-nowrap ${isHovered ? "px-3" : "justify-center px-0"}`}>
-            <LogOut className="w-5 h-5 shrink-0" />
-            <span className={`transition-opacity duration-300 ${isHovered ? "opacity-100 block" : "opacity-0 hidden"}`}>
+          <button
+            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium text-zinc-400 whitespace-nowrap transition-colors hover:bg-zinc-800/60 hover:text-zinc-200 ${
+              isHovered ? "px-3" : "justify-center px-0"
+            }`}
+            type="button"
+          >
+            <LogOut className="h-5 w-5 shrink-0" />
+            <span
+              className={`transition-opacity duration-300 ${
+                isHovered ? "block opacity-100" : "hidden opacity-0"
+              }`}
+            >
               Logout
             </span>
           </button>

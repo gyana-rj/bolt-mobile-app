@@ -10,57 +10,95 @@
 */
 
 export class ArtifactProcessor {
-    public currentArtifact: string
-    private onFileContent: (filePath: string, onFileContent: string) => void;
-    private onShellCommand: (shellCommand: string) => void;
+  public currentArtifact: string;
+  private onFileContent: (
+    filePath: string,
+    onFileContent: string,
+  ) => void | Promise<void>;
+  private onShellCommand: (shellCommand: string) => void | Promise<void>;
 
+  constructor(
+    currentArtifact: string,
+    onFileContent: (
+      filePath: string,
+      fileContent: string,
+    ) => void | Promise<void>,
+    onShellCommand: (shellCommand: string) => void | Promise<void>,
+  ) {
+    this.currentArtifact = currentArtifact;
+    this.onFileContent = onFileContent;
+    this.onShellCommand = onShellCommand;
+  }
 
-    constructor(
-        currentArtifact: string, 
-        onFileContent: (filePath: string, fileContent: string) => void, 
-        onShellCommand: (shellCommand: string) => void
-    ){
-        this.currentArtifact = currentArtifact;
-        this.onFileContent = onFileContent;
-        this.onShellCommand = onShellCommand;
-    }
+  append(artifact: string) {
+    this.currentArtifact += artifact;
+  }
 
-    append(artifact: string){
-        this.currentArtifact += artifact;
-    }
+  private getAttribute(source: string, name: string) {
+    const match = source.match(
+      new RegExp(`${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"),
+    );
 
-    parse(){
-        const latestActionStart = this.currentArtifact.split("\n").findIndex((line) => line.includes("<boltAction type="));
-        const latestActionEnd = this.currentArtifact.split("\n").findIndex((line) => line.includes("</boltAction>")) ?? (this.currentArtifact.split("\n").length - 1);
+    return match?.[1] ?? match?.[2] ?? match?.[3] ?? "";
+  }
 
-        if(latestActionStart === -1){
-            return;
+  private keepOnlyPotentialPartialTag() {
+    const lastTagStart = this.currentArtifact.lastIndexOf("<");
+    this.currentArtifact =
+      lastTagStart === -1 ? "" : this.currentArtifact.slice(lastTagStart);
+  }
+
+  async parse() {
+    const actionOpenTag = /<boltAction\b([^>]*)>/i;
+    const actionCloseTag = /<\/boltAction>/i;
+
+    while (true) {
+      const startMatch = actionOpenTag.exec(this.currentArtifact);
+
+      if (!startMatch) {
+        this.keepOnlyPotentialPartialTag();
+        return;
+      }
+
+      const actionStart = startMatch.index;
+      const actionContentStart = actionStart + startMatch[0].length;
+      const actionRemainder = this.currentArtifact.slice(actionContentStart);
+      const endMatch = actionCloseTag.exec(actionRemainder);
+
+      if (!endMatch) {
+        this.currentArtifact = this.currentArtifact.slice(actionStart);
+        return;
+      }
+
+      const actionContentEnd = actionContentStart + endMatch.index;
+      const actionEnd = actionContentEnd + endMatch[0].length;
+      const actionAttributes = startMatch[1] ?? "";
+      const actionType = this.getAttribute(actionAttributes, "type");
+      const actionContent = this.currentArtifact.slice(
+        actionContentStart,
+        actionContentEnd,
+      );
+
+      this.currentArtifact = this.currentArtifact.slice(actionEnd);
+
+      try {
+        if (actionType === "shell") {
+          const shellCommand = actionContent.trim();
+
+          if (shellCommand) {
+            await this.onShellCommand(shellCommand);
+          }
+        } else if (actionType === "file") {
+          const filePath = this.getAttribute(actionAttributes, "filePath");
+
+          if (filePath) {
+            await this.onFileContent(filePath, actionContent);
+          }
         }
-
-        const latestActionType = this.currentArtifact.split("\n")[latestActionStart]?.split("type=")[1]?.split(" ")[0]?.split(">")[0];
-        const latestActionContext = this.currentArtifact.split("\n").slice(latestActionStart, latestActionEnd + 1).join("\n");
-
-
-        try{
-            if(latestActionType === "\"shell\""){
-                let shellCommand = latestActionContext.split('\n').slice(1).join('\n');
-                if(shellCommand.includes("</boltAction>")){
-                    shellCommand = shellCommand.split("<boltAction>")[0] ?? "";
-                    this.currentArtifact = this.currentArtifact.split(latestActionContext)[1] ?? "";
-                    this.onShellCommand(shellCommand);
-                }
-            }else if(latestActionType === "\"file\""){
-                const filePath = this.currentArtifact.split("\n")[latestActionStart]?.split("filePath=")[1]?.split(">")[0];
-                let fileContent = latestActionContext.split("\n").join("\n");
-                if(fileContent.includes("</boltAction>")){
-                    fileContent = fileContent.split("</boltAction>")[0] ?? "";
-                    this.currentArtifact = this.currentArtifact.split(latestActionContext)[1] ?? "";
-                    this.onFileContent(filePath?.split("\"")[1] ?? "", fileContent);
-                }
-            }
-        }catch(e) {
-            console.log("Error parsing artifact chunk");
-            console.error(e);
-        }
+      } catch (e) {
+        console.log("Error parsing artifact chunk");
+        console.error(e);
+      }
     }
+  }
 }

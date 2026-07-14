@@ -28,6 +28,11 @@ export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
  * 
  */
 export type Prompt = $Result.DefaultSelection<Prisma.$PromptPayload>
+/**
+ * Model Action
+ * 
+ */
+export type Action = $Result.DefaultSelection<Prisma.$ActionPayload>
 
 /**
  * Enums
@@ -196,6 +201,16 @@ export class PrismaClient<
     * ```
     */
   get prompt(): Prisma.PromptDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.action`: Exposes CRUD operations for the **Action** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Actions
+    * const actions = await prisma.action.findMany()
+    * ```
+    */
+  get action(): Prisma.ActionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -632,7 +647,8 @@ export namespace Prisma {
   export const ModelName: {
     Users: 'Users',
     Project: 'Project',
-    Prompt: 'Prompt'
+    Prompt: 'Prompt',
+    Action: 'Action'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -648,7 +664,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "project" | "prompt"
+      modelProps: "users" | "project" | "prompt" | "action"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -874,6 +890,80 @@ export namespace Prisma {
           }
         }
       }
+      Action: {
+        payload: Prisma.$ActionPayload<ExtArgs>
+        fields: Prisma.ActionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ActionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ActionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>
+          }
+          findFirst: {
+            args: Prisma.ActionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ActionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>
+          }
+          findMany: {
+            args: Prisma.ActionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>[]
+          }
+          create: {
+            args: Prisma.ActionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>
+          }
+          createMany: {
+            args: Prisma.ActionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ActionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>[]
+          }
+          delete: {
+            args: Prisma.ActionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>
+          }
+          update: {
+            args: Prisma.ActionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ActionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ActionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ActionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ActionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ActionPayload>
+          }
+          aggregate: {
+            args: Prisma.ActionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAction>
+          }
+          groupBy: {
+            args: Prisma.ActionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ActionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ActionCountArgs<ExtArgs>
+            result: $Utils.Optional<ActionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -985,6 +1075,7 @@ export namespace Prisma {
     users?: UsersOmit
     project?: ProjectOmit
     prompt?: PromptOmit
+    action?: ActionOmit
   }
 
   /* Types for Logging */
@@ -1066,10 +1157,12 @@ export namespace Prisma {
 
   export type ProjectCountOutputType = {
     prompt: number
+    action: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     prompt?: boolean | ProjectCountOutputTypeCountPromptArgs
+    action?: boolean | ProjectCountOutputTypeCountActionArgs
   }
 
   // Custom InputTypes
@@ -1088,6 +1181,13 @@ export namespace Prisma {
    */
   export type ProjectCountOutputTypeCountPromptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PromptWhereInput
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountActionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ActionWhereInput
   }
 
 
@@ -2247,6 +2347,7 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     prompt?: boolean | Project$promptArgs<ExtArgs>
+    action?: boolean | Project$actionArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -2277,6 +2378,7 @@ export namespace Prisma {
   export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "description" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     prompt?: boolean | Project$promptArgs<ExtArgs>
+    action?: boolean | Project$actionArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2286,6 +2388,7 @@ export namespace Prisma {
     name: "Project"
     objects: {
       prompt: Prisma.$PromptPayload<ExtArgs>[]
+      action: Prisma.$ActionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2688,6 +2791,7 @@ export namespace Prisma {
   export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     prompt<T extends Project$promptArgs<ExtArgs> = {}>(args?: Subset<T, Project$promptArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    action<T extends Project$actionArgs<ExtArgs> = {}>(args?: Subset<T, Project$actionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3136,6 +3240,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PromptScalarFieldEnum | PromptScalarFieldEnum[]
+  }
+
+  /**
+   * Project.action
+   */
+  export type Project$actionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    where?: ActionWhereInput
+    orderBy?: ActionOrderByWithRelationInput | ActionOrderByWithRelationInput[]
+    cursor?: ActionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ActionScalarFieldEnum | ActionScalarFieldEnum[]
   }
 
   /**
@@ -4234,6 +4362,1069 @@ export namespace Prisma {
 
 
   /**
+   * Model Action
+   */
+
+  export type AggregateAction = {
+    _count: ActionCountAggregateOutputType | null
+    _min: ActionMinAggregateOutputType | null
+    _max: ActionMaxAggregateOutputType | null
+  }
+
+  export type ActionMinAggregateOutputType = {
+    id: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    projectId: string | null
+    content: string | null
+  }
+
+  export type ActionMaxAggregateOutputType = {
+    id: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    projectId: string | null
+    content: string | null
+  }
+
+  export type ActionCountAggregateOutputType = {
+    id: number
+    createdAt: number
+    updatedAt: number
+    projectId: number
+    content: number
+    _all: number
+  }
+
+
+  export type ActionMinAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    projectId?: true
+    content?: true
+  }
+
+  export type ActionMaxAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    projectId?: true
+    content?: true
+  }
+
+  export type ActionCountAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    projectId?: true
+    content?: true
+    _all?: true
+  }
+
+  export type ActionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Action to aggregate.
+     */
+    where?: ActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actions to fetch.
+     */
+    orderBy?: ActionOrderByWithRelationInput | ActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Actions
+    **/
+    _count?: true | ActionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ActionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ActionMaxAggregateInputType
+  }
+
+  export type GetActionAggregateType<T extends ActionAggregateArgs> = {
+        [P in keyof T & keyof AggregateAction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAction[P]>
+      : GetScalarType<T[P], AggregateAction[P]>
+  }
+
+
+
+
+  export type ActionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ActionWhereInput
+    orderBy?: ActionOrderByWithAggregationInput | ActionOrderByWithAggregationInput[]
+    by: ActionScalarFieldEnum[] | ActionScalarFieldEnum
+    having?: ActionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ActionCountAggregateInputType | true
+    _min?: ActionMinAggregateInputType
+    _max?: ActionMaxAggregateInputType
+  }
+
+  export type ActionGroupByOutputType = {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    projectId: string
+    content: string
+    _count: ActionCountAggregateOutputType | null
+    _min: ActionMinAggregateOutputType | null
+    _max: ActionMaxAggregateOutputType | null
+  }
+
+  type GetActionGroupByPayload<T extends ActionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ActionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ActionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ActionGroupByOutputType[P]>
+            : GetScalarType<T[P], ActionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ActionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    content?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["action"]>
+
+  export type ActionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    content?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["action"]>
+
+  export type ActionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    content?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["action"]>
+
+  export type ActionSelectScalar = {
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    projectId?: boolean
+    content?: boolean
+  }
+
+  export type ActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "projectId" | "content", ExtArgs["result"]["action"]>
+  export type ActionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type ActionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type ActionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+
+  export type $ActionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Action"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      createdAt: Date
+      updatedAt: Date
+      projectId: string
+      content: string
+    }, ExtArgs["result"]["action"]>
+    composites: {}
+  }
+
+  type ActionGetPayload<S extends boolean | null | undefined | ActionDefaultArgs> = $Result.GetResult<Prisma.$ActionPayload, S>
+
+  type ActionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ActionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ActionCountAggregateInputType | true
+    }
+
+  export interface ActionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Action'], meta: { name: 'Action' } }
+    /**
+     * Find zero or one Action that matches the filter.
+     * @param {ActionFindUniqueArgs} args - Arguments to find a Action
+     * @example
+     * // Get one Action
+     * const action = await prisma.action.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ActionFindUniqueArgs>(args: SelectSubset<T, ActionFindUniqueArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Action that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ActionFindUniqueOrThrowArgs} args - Arguments to find a Action
+     * @example
+     * // Get one Action
+     * const action = await prisma.action.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ActionFindUniqueOrThrowArgs>(args: SelectSubset<T, ActionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Action that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionFindFirstArgs} args - Arguments to find a Action
+     * @example
+     * // Get one Action
+     * const action = await prisma.action.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ActionFindFirstArgs>(args?: SelectSubset<T, ActionFindFirstArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Action that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionFindFirstOrThrowArgs} args - Arguments to find a Action
+     * @example
+     * // Get one Action
+     * const action = await prisma.action.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ActionFindFirstOrThrowArgs>(args?: SelectSubset<T, ActionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Actions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Actions
+     * const actions = await prisma.action.findMany()
+     * 
+     * // Get first 10 Actions
+     * const actions = await prisma.action.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const actionWithIdOnly = await prisma.action.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ActionFindManyArgs>(args?: SelectSubset<T, ActionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Action.
+     * @param {ActionCreateArgs} args - Arguments to create a Action.
+     * @example
+     * // Create one Action
+     * const Action = await prisma.action.create({
+     *   data: {
+     *     // ... data to create a Action
+     *   }
+     * })
+     * 
+     */
+    create<T extends ActionCreateArgs>(args: SelectSubset<T, ActionCreateArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Actions.
+     * @param {ActionCreateManyArgs} args - Arguments to create many Actions.
+     * @example
+     * // Create many Actions
+     * const action = await prisma.action.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ActionCreateManyArgs>(args?: SelectSubset<T, ActionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Actions and returns the data saved in the database.
+     * @param {ActionCreateManyAndReturnArgs} args - Arguments to create many Actions.
+     * @example
+     * // Create many Actions
+     * const action = await prisma.action.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Actions and only return the `id`
+     * const actionWithIdOnly = await prisma.action.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ActionCreateManyAndReturnArgs>(args?: SelectSubset<T, ActionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Action.
+     * @param {ActionDeleteArgs} args - Arguments to delete one Action.
+     * @example
+     * // Delete one Action
+     * const Action = await prisma.action.delete({
+     *   where: {
+     *     // ... filter to delete one Action
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ActionDeleteArgs>(args: SelectSubset<T, ActionDeleteArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Action.
+     * @param {ActionUpdateArgs} args - Arguments to update one Action.
+     * @example
+     * // Update one Action
+     * const action = await prisma.action.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ActionUpdateArgs>(args: SelectSubset<T, ActionUpdateArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Actions.
+     * @param {ActionDeleteManyArgs} args - Arguments to filter Actions to delete.
+     * @example
+     * // Delete a few Actions
+     * const { count } = await prisma.action.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ActionDeleteManyArgs>(args?: SelectSubset<T, ActionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Actions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Actions
+     * const action = await prisma.action.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ActionUpdateManyArgs>(args: SelectSubset<T, ActionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Actions and returns the data updated in the database.
+     * @param {ActionUpdateManyAndReturnArgs} args - Arguments to update many Actions.
+     * @example
+     * // Update many Actions
+     * const action = await prisma.action.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Actions and only return the `id`
+     * const actionWithIdOnly = await prisma.action.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ActionUpdateManyAndReturnArgs>(args: SelectSubset<T, ActionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Action.
+     * @param {ActionUpsertArgs} args - Arguments to update or create a Action.
+     * @example
+     * // Update or create a Action
+     * const action = await prisma.action.upsert({
+     *   create: {
+     *     // ... data to create a Action
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Action we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ActionUpsertArgs>(args: SelectSubset<T, ActionUpsertArgs<ExtArgs>>): Prisma__ActionClient<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Actions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionCountArgs} args - Arguments to filter Actions to count.
+     * @example
+     * // Count the number of Actions
+     * const count = await prisma.action.count({
+     *   where: {
+     *     // ... the filter for the Actions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ActionCountArgs>(
+      args?: Subset<T, ActionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ActionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Action.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ActionAggregateArgs>(args: Subset<T, ActionAggregateArgs>): Prisma.PrismaPromise<GetActionAggregateType<T>>
+
+    /**
+     * Group by Action.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ActionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ActionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ActionGroupByArgs['orderBy'] }
+        : { orderBy?: ActionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ActionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetActionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Action model
+   */
+  readonly fields: ActionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Action.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ActionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Action model
+   */
+  interface ActionFieldRefs {
+    readonly id: FieldRef<"Action", 'String'>
+    readonly createdAt: FieldRef<"Action", 'DateTime'>
+    readonly updatedAt: FieldRef<"Action", 'DateTime'>
+    readonly projectId: FieldRef<"Action", 'String'>
+    readonly content: FieldRef<"Action", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Action findUnique
+   */
+  export type ActionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * Filter, which Action to fetch.
+     */
+    where: ActionWhereUniqueInput
+  }
+
+  /**
+   * Action findUniqueOrThrow
+   */
+  export type ActionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * Filter, which Action to fetch.
+     */
+    where: ActionWhereUniqueInput
+  }
+
+  /**
+   * Action findFirst
+   */
+  export type ActionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * Filter, which Action to fetch.
+     */
+    where?: ActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actions to fetch.
+     */
+    orderBy?: ActionOrderByWithRelationInput | ActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Actions.
+     */
+    cursor?: ActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Actions.
+     */
+    distinct?: ActionScalarFieldEnum | ActionScalarFieldEnum[]
+  }
+
+  /**
+   * Action findFirstOrThrow
+   */
+  export type ActionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * Filter, which Action to fetch.
+     */
+    where?: ActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actions to fetch.
+     */
+    orderBy?: ActionOrderByWithRelationInput | ActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Actions.
+     */
+    cursor?: ActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Actions.
+     */
+    distinct?: ActionScalarFieldEnum | ActionScalarFieldEnum[]
+  }
+
+  /**
+   * Action findMany
+   */
+  export type ActionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * Filter, which Actions to fetch.
+     */
+    where?: ActionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Actions to fetch.
+     */
+    orderBy?: ActionOrderByWithRelationInput | ActionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Actions.
+     */
+    cursor?: ActionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Actions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Actions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Actions.
+     */
+    distinct?: ActionScalarFieldEnum | ActionScalarFieldEnum[]
+  }
+
+  /**
+   * Action create
+   */
+  export type ActionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Action.
+     */
+    data: XOR<ActionCreateInput, ActionUncheckedCreateInput>
+  }
+
+  /**
+   * Action createMany
+   */
+  export type ActionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Actions.
+     */
+    data: ActionCreateManyInput | ActionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Action createManyAndReturn
+   */
+  export type ActionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Actions.
+     */
+    data: ActionCreateManyInput | ActionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Action update
+   */
+  export type ActionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Action.
+     */
+    data: XOR<ActionUpdateInput, ActionUncheckedUpdateInput>
+    /**
+     * Choose, which Action to update.
+     */
+    where: ActionWhereUniqueInput
+  }
+
+  /**
+   * Action updateMany
+   */
+  export type ActionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Actions.
+     */
+    data: XOR<ActionUpdateManyMutationInput, ActionUncheckedUpdateManyInput>
+    /**
+     * Filter which Actions to update
+     */
+    where?: ActionWhereInput
+    /**
+     * Limit how many Actions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Action updateManyAndReturn
+   */
+  export type ActionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * The data used to update Actions.
+     */
+    data: XOR<ActionUpdateManyMutationInput, ActionUncheckedUpdateManyInput>
+    /**
+     * Filter which Actions to update
+     */
+    where?: ActionWhereInput
+    /**
+     * Limit how many Actions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Action upsert
+   */
+  export type ActionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Action to update in case it exists.
+     */
+    where: ActionWhereUniqueInput
+    /**
+     * In case the Action found by the `where` argument doesn't exist, create a new Action with this data.
+     */
+    create: XOR<ActionCreateInput, ActionUncheckedCreateInput>
+    /**
+     * In case the Action was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ActionUpdateInput, ActionUncheckedUpdateInput>
+  }
+
+  /**
+   * Action delete
+   */
+  export type ActionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+    /**
+     * Filter which Action to delete.
+     */
+    where: ActionWhereUniqueInput
+  }
+
+  /**
+   * Action deleteMany
+   */
+  export type ActionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Actions to delete
+     */
+    where?: ActionWhereInput
+    /**
+     * Limit how many Actions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Action without action
+   */
+  export type ActionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Action
+     */
+    select?: ActionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Action
+     */
+    omit?: ActionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ActionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -4278,6 +5469,17 @@ export namespace Prisma {
   };
 
   export type PromptScalarFieldEnum = (typeof PromptScalarFieldEnum)[keyof typeof PromptScalarFieldEnum]
+
+
+  export const ActionScalarFieldEnum: {
+    id: 'id',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    projectId: 'projectId',
+    content: 'content'
+  };
+
+  export type ActionScalarFieldEnum = (typeof ActionScalarFieldEnum)[keyof typeof ActionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4425,6 +5627,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     userId?: StringFilter<"Project"> | string
     prompt?: PromptListRelationFilter
+    action?: ActionListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -4434,6 +5637,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     prompt?: PromptOrderByRelationAggregateInput
+    action?: ActionOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -4446,6 +5650,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     userId?: StringFilter<"Project"> | string
     prompt?: PromptListRelationFilter
+    action?: ActionListRelationFilter
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -4530,6 +5735,61 @@ export namespace Prisma {
     projectId?: StringWithAggregatesFilter<"Prompt"> | string
   }
 
+  export type ActionWhereInput = {
+    AND?: ActionWhereInput | ActionWhereInput[]
+    OR?: ActionWhereInput[]
+    NOT?: ActionWhereInput | ActionWhereInput[]
+    id?: StringFilter<"Action"> | string
+    createdAt?: DateTimeFilter<"Action"> | Date | string
+    updatedAt?: DateTimeFilter<"Action"> | Date | string
+    projectId?: StringFilter<"Action"> | string
+    content?: StringFilter<"Action"> | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }
+
+  export type ActionOrderByWithRelationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    content?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+  }
+
+  export type ActionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ActionWhereInput | ActionWhereInput[]
+    OR?: ActionWhereInput[]
+    NOT?: ActionWhereInput | ActionWhereInput[]
+    createdAt?: DateTimeFilter<"Action"> | Date | string
+    updatedAt?: DateTimeFilter<"Action"> | Date | string
+    projectId?: StringFilter<"Action"> | string
+    content?: StringFilter<"Action"> | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }, "id">
+
+  export type ActionOrderByWithAggregationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    content?: SortOrder
+    _count?: ActionCountOrderByAggregateInput
+    _max?: ActionMaxOrderByAggregateInput
+    _min?: ActionMinOrderByAggregateInput
+  }
+
+  export type ActionScalarWhereWithAggregatesInput = {
+    AND?: ActionScalarWhereWithAggregatesInput | ActionScalarWhereWithAggregatesInput[]
+    OR?: ActionScalarWhereWithAggregatesInput[]
+    NOT?: ActionScalarWhereWithAggregatesInput | ActionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Action"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Action"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Action"> | Date | string
+    projectId?: StringWithAggregatesFilter<"Action"> | string
+    content?: StringWithAggregatesFilter<"Action"> | string
+  }
+
   export type UsersCreateInput = {
     id?: string
     email: string
@@ -4586,6 +5846,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     prompt?: PromptCreateNestedManyWithoutProjectInput
+    action?: ActionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -4595,6 +5856,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     prompt?: PromptUncheckedCreateNestedManyWithoutProjectInput
+    action?: ActionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -4604,6 +5866,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     prompt?: PromptUpdateManyWithoutProjectNestedInput
+    action?: ActionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -4613,6 +5876,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     prompt?: PromptUncheckedUpdateManyWithoutProjectNestedInput
+    action?: ActionUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -4699,6 +5963,61 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ActionCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    content: string
+    project: ProjectCreateNestedOneWithoutActionInput
+  }
+
+  export type ActionUncheckedCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectId: string
+    content: string
+  }
+
+  export type ActionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: StringFieldUpdateOperationsInput | string
+    project?: ProjectUpdateOneRequiredWithoutActionNestedInput
+  }
+
+  export type ActionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ActionCreateManyInput = {
+    id?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectId: string
+    content: string
+  }
+
+  export type ActionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ActionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -4801,12 +6120,22 @@ export namespace Prisma {
     none?: PromptWhereInput
   }
 
+  export type ActionListRelationFilter = {
+    every?: ActionWhereInput
+    some?: ActionWhereInput
+    none?: ActionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type PromptOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ActionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -4901,6 +6230,30 @@ export namespace Prisma {
     _max?: NestedEnumPromptTypeFilter<$PrismaModel>
   }
 
+  export type ActionCountOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    content?: SortOrder
+  }
+
+  export type ActionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    content?: SortOrder
+  }
+
+  export type ActionMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    projectId?: SortOrder
+    content?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -4916,11 +6269,25 @@ export namespace Prisma {
     connect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
   }
 
+  export type ActionCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ActionCreateWithoutProjectInput, ActionUncheckedCreateWithoutProjectInput> | ActionCreateWithoutProjectInput[] | ActionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ActionCreateOrConnectWithoutProjectInput | ActionCreateOrConnectWithoutProjectInput[]
+    createMany?: ActionCreateManyProjectInputEnvelope
+    connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+  }
+
   export type PromptUncheckedCreateNestedManyWithoutProjectInput = {
     create?: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput> | PromptCreateWithoutProjectInput[] | PromptUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: PromptCreateOrConnectWithoutProjectInput | PromptCreateOrConnectWithoutProjectInput[]
     createMany?: PromptCreateManyProjectInputEnvelope
     connect?: PromptWhereUniqueInput | PromptWhereUniqueInput[]
+  }
+
+  export type ActionUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ActionCreateWithoutProjectInput, ActionUncheckedCreateWithoutProjectInput> | ActionCreateWithoutProjectInput[] | ActionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ActionCreateOrConnectWithoutProjectInput | ActionCreateOrConnectWithoutProjectInput[]
+    createMany?: ActionCreateManyProjectInputEnvelope
+    connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -4941,6 +6308,20 @@ export namespace Prisma {
     deleteMany?: PromptScalarWhereInput | PromptScalarWhereInput[]
   }
 
+  export type ActionUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ActionCreateWithoutProjectInput, ActionUncheckedCreateWithoutProjectInput> | ActionCreateWithoutProjectInput[] | ActionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ActionCreateOrConnectWithoutProjectInput | ActionCreateOrConnectWithoutProjectInput[]
+    upsert?: ActionUpsertWithWhereUniqueWithoutProjectInput | ActionUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ActionCreateManyProjectInputEnvelope
+    set?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    disconnect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    delete?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    update?: ActionUpdateWithWhereUniqueWithoutProjectInput | ActionUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ActionUpdateManyWithWhereWithoutProjectInput | ActionUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ActionScalarWhereInput | ActionScalarWhereInput[]
+  }
+
   export type PromptUncheckedUpdateManyWithoutProjectNestedInput = {
     create?: XOR<PromptCreateWithoutProjectInput, PromptUncheckedCreateWithoutProjectInput> | PromptCreateWithoutProjectInput[] | PromptUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: PromptCreateOrConnectWithoutProjectInput | PromptCreateOrConnectWithoutProjectInput[]
@@ -4953,6 +6334,20 @@ export namespace Prisma {
     update?: PromptUpdateWithWhereUniqueWithoutProjectInput | PromptUpdateWithWhereUniqueWithoutProjectInput[]
     updateMany?: PromptUpdateManyWithWhereWithoutProjectInput | PromptUpdateManyWithWhereWithoutProjectInput[]
     deleteMany?: PromptScalarWhereInput | PromptScalarWhereInput[]
+  }
+
+  export type ActionUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ActionCreateWithoutProjectInput, ActionUncheckedCreateWithoutProjectInput> | ActionCreateWithoutProjectInput[] | ActionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ActionCreateOrConnectWithoutProjectInput | ActionCreateOrConnectWithoutProjectInput[]
+    upsert?: ActionUpsertWithWhereUniqueWithoutProjectInput | ActionUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ActionCreateManyProjectInputEnvelope
+    set?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    disconnect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    delete?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+    update?: ActionUpdateWithWhereUniqueWithoutProjectInput | ActionUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ActionUpdateManyWithWhereWithoutProjectInput | ActionUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ActionScalarWhereInput | ActionScalarWhereInput[]
   }
 
   export type ProjectCreateNestedOneWithoutPromptInput = {
@@ -4971,6 +6366,20 @@ export namespace Prisma {
     upsert?: ProjectUpsertWithoutPromptInput
     connect?: ProjectWhereUniqueInput
     update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutPromptInput, ProjectUpdateWithoutPromptInput>, ProjectUncheckedUpdateWithoutPromptInput>
+  }
+
+  export type ProjectCreateNestedOneWithoutActionInput = {
+    create?: XOR<ProjectCreateWithoutActionInput, ProjectUncheckedCreateWithoutActionInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutActionInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type ProjectUpdateOneRequiredWithoutActionNestedInput = {
+    create?: XOR<ProjectCreateWithoutActionInput, ProjectUncheckedCreateWithoutActionInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutActionInput
+    upsert?: ProjectUpsertWithoutActionInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutActionInput, ProjectUpdateWithoutActionInput>, ProjectUncheckedUpdateWithoutActionInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5125,6 +6534,30 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ActionCreateWithoutProjectInput = {
+    id?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    content: string
+  }
+
+  export type ActionUncheckedCreateWithoutProjectInput = {
+    id?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    content: string
+  }
+
+  export type ActionCreateOrConnectWithoutProjectInput = {
+    where: ActionWhereUniqueInput
+    create: XOR<ActionCreateWithoutProjectInput, ActionUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ActionCreateManyProjectInputEnvelope = {
+    data: ActionCreateManyProjectInput | ActionCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PromptUpsertWithWhereUniqueWithoutProjectInput = {
     where: PromptWhereUniqueInput
     update: XOR<PromptUpdateWithoutProjectInput, PromptUncheckedUpdateWithoutProjectInput>
@@ -5153,12 +6586,40 @@ export namespace Prisma {
     projectId?: StringFilter<"Prompt"> | string
   }
 
+  export type ActionUpsertWithWhereUniqueWithoutProjectInput = {
+    where: ActionWhereUniqueInput
+    update: XOR<ActionUpdateWithoutProjectInput, ActionUncheckedUpdateWithoutProjectInput>
+    create: XOR<ActionCreateWithoutProjectInput, ActionUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ActionUpdateWithWhereUniqueWithoutProjectInput = {
+    where: ActionWhereUniqueInput
+    data: XOR<ActionUpdateWithoutProjectInput, ActionUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type ActionUpdateManyWithWhereWithoutProjectInput = {
+    where: ActionScalarWhereInput
+    data: XOR<ActionUpdateManyMutationInput, ActionUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type ActionScalarWhereInput = {
+    AND?: ActionScalarWhereInput | ActionScalarWhereInput[]
+    OR?: ActionScalarWhereInput[]
+    NOT?: ActionScalarWhereInput | ActionScalarWhereInput[]
+    id?: StringFilter<"Action"> | string
+    createdAt?: DateTimeFilter<"Action"> | Date | string
+    updatedAt?: DateTimeFilter<"Action"> | Date | string
+    projectId?: StringFilter<"Action"> | string
+    content?: StringFilter<"Action"> | string
+  }
+
   export type ProjectCreateWithoutPromptInput = {
     id?: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    action?: ActionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutPromptInput = {
@@ -5167,6 +6628,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    action?: ActionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutPromptInput = {
@@ -5191,6 +6653,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    action?: ActionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutPromptInput = {
@@ -5199,6 +6662,59 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    action?: ActionUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectCreateWithoutActionInput = {
+    id?: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    prompt?: PromptCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutActionInput = {
+    id?: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    prompt?: PromptUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutActionInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutActionInput, ProjectUncheckedCreateWithoutActionInput>
+  }
+
+  export type ProjectUpsertWithoutActionInput = {
+    update: XOR<ProjectUpdateWithoutActionInput, ProjectUncheckedUpdateWithoutActionInput>
+    create: XOR<ProjectCreateWithoutActionInput, ProjectUncheckedCreateWithoutActionInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutActionInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutActionInput, ProjectUncheckedUpdateWithoutActionInput>
+  }
+
+  export type ProjectUpdateWithoutActionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    prompt?: PromptUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutActionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    prompt?: PromptUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type PromptCreateManyProjectInput = {
@@ -5207,6 +6723,13 @@ export namespace Prisma {
     type: $Enums.PromptType
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ActionCreateManyProjectInput = {
+    id?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    content: string
   }
 
   export type PromptUpdateWithoutProjectInput = {
@@ -5231,6 +6754,27 @@ export namespace Prisma {
     type?: EnumPromptTypeFieldUpdateOperationsInput | $Enums.PromptType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ActionUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ActionUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ActionUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    content?: StringFieldUpdateOperationsInput | string
   }
 
 
