@@ -2,14 +2,18 @@
 
 import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
+import Link from "next/link";
 
 export default function Appbar() {
   return (
     <header className="border-b border-zinc-800 bg-zinc-950 px-6 py-4 flex items-center justify-between">
       <div className="flex items-center space-x-2">
-        <span className="text-xl font-bold text-white tracking-tight">
-          bolt<span className="text-zinc-500">.new</span>
-        </span>
+        <Link
+          href="/"
+          className="text-xl font-bold text-white tracking-tight hover:opacity-90"
+        >
+          Mobile <span className="text-zinc-500">Magic</span>
+        </Link>
       </div>
       <div className="flex items-center space-x-4">
         <Show when="signed-out">

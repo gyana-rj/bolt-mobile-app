@@ -7,8 +7,8 @@ import "@/app/globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "bolt.new clone",
-  description: "Next-gen developmental workspace interface application.",
+  title: "Mobile Magic",
+  description: "Mobile app development workspace.",
 };
 
 export default function RootLayout({

@@ -16,5 +16,3 @@ EXPOSE 8080
 # Start code-server on container launch
 CMD ["code-server", "--auth", "none", "--bind-addr", "0.0.0.0:8080", "/tmp/bolty-worker"]
 
-
-

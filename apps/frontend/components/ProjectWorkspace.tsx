@@ -10,27 +10,14 @@ import axios from "axios";
 import {
   Activity,
   CheckCircle2,
-  ChevronRight,
   Circle,
-  Code2,
-  Database,
-  Eye,
   FileText,
-  Folder,
-  History,
-  Lightbulb,
   Loader2,
-  MessageSquareText,
-  MousePointer2,
-  PanelLeft,
-  Plus,
-  Rocket,
-  Search,
   Send,
-  Settings,
   Terminal,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
 import {
   type FormEvent,
   type KeyboardEvent,
@@ -44,13 +31,12 @@ interface ProjectWorkspaceProps {
   projectId: string;
 }
 
-const fallbackFiles = [
-  "app/_layout.tsx",
-  "app/index.tsx",
-  "app.json",
-  "package.json",
-  "tsconfig.json",
-];
+type ChatTurn = {
+  id: string;
+  prompt: Prompt;
+  actions: Action[];
+  isLatest: boolean;
+};
 
 function getDisplayTime(value: string) {
   const date = new Date(value);
@@ -95,11 +81,13 @@ function getActionLabel(content: string) {
   return content
     .replace(/^Updated file\s+/i, "Update ")
     .replace(/^Ran command\s+/i, "Run ")
+    .replace(/^Queued command\s+/i, "Queue ")
+    .replace(/^Skipped auto-start command\s+/i, "Skip ")
+    .replace(
+      /^You can run your app with npm run web$/i,
+      "You can run your app",
+    )
     .replace(/^Started clean project workspace$/i, "Start clean workspace");
-}
-
-function getActionFilePath(action: Action) {
-  return action.content.match(/^Updated file\s+(.+)$/i)?.[1];
 }
 
 function getActionIcon(content: string) {
@@ -109,67 +97,47 @@ function getActionIcon(content: string) {
     return FileText;
   }
 
-  if (normalizedContent.includes("ran command")) {
+  if (
+    normalizedContent.includes("ran command") ||
+    normalizedContent.includes("queued command")
+  ) {
     return Terminal;
   }
 
   return Zap;
 }
 
-function ActivityRail() {
-  const items = [
-    { label: "Menu", icon: PanelLeft },
-    { label: "Search", icon: Search, active: true },
-    { label: "Messages", icon: MessageSquareText },
-    { label: "Source", icon: Code2 },
-    { label: "Database", icon: Database },
-    { label: "Output", icon: Rocket },
-  ];
+function isReadyAction(content: string) {
+  return /^You can run your app with npm run web$/i.test(content);
+}
 
-  return (
-    <aside className="flex w-[76px] shrink-0 flex-col items-center border-r border-zinc-800 bg-[#111318] py-4">
-      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-white text-2xl font-black italic text-zinc-950">
-        b
-      </div>
+function getTurnActions(
+  prompt: Prompt,
+  nextPrompt: Prompt | undefined,
+  sortedActions: Action[],
+) {
+  const start = new Date(prompt.createdAt).getTime();
+  const end = nextPrompt
+    ? new Date(nextPrompt.createdAt).getTime()
+    : Number.POSITIVE_INFINITY;
 
-      <nav className="flex flex-1 flex-col items-center gap-2">
-        {items.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <button
-              key={item.label}
-              title={item.label}
-              className={`flex h-11 w-11 items-center justify-center rounded-xl border transition-colors ${
-                item.active
-                  ? "border-zinc-700 bg-zinc-800 text-white"
-                  : "border-transparent text-zinc-500 hover:bg-zinc-900 hover:text-zinc-200"
-              }`}
-              type="button"
-            >
-              <Icon className="h-5 w-5" />
-            </button>
-          );
-        })}
-      </nav>
-
-      <button
-        title="New project"
-        className="flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-800 text-zinc-300 transition-colors hover:bg-zinc-700 hover:text-white"
-        type="button"
-      >
-        <Plus className="h-5 w-5" />
-      </button>
-    </aside>
-  );
+  return sortedActions.filter((action) => {
+    const createdAt = new Date(action.createdAt).getTime();
+    return createdAt >= start && createdAt < end;
+  });
 }
 
 function WorkspaceHeader({ projectTitle }: { projectTitle: string }) {
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-800 bg-[#0d0d10] px-5">
-      <div className="flex min-w-0 items-center gap-3">
+    <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-zinc-800 bg-[#0d0d10] px-5">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <div className="flex items-center gap-2 text-zinc-500">
-          <span className="text-2xl font-black italic text-white">b</span>
+          <Link
+            href="/"
+            className="text-lg font-bold text-white hover:opacity-90"
+          >
+            Mobile Magic
+          </Link>
           <span>/</span>
         </div>
         <div className="min-w-0 truncate text-sm font-medium text-zinc-100 sm:text-base">
@@ -177,70 +145,125 @@ function WorkspaceHeader({ projectTitle }: { projectTitle: string }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="hidden items-center gap-1 rounded-full border border-zinc-800 bg-zinc-950 p-1 md:flex">
-          <button
-            title="Preview"
-            className="flex h-8 items-center gap-2 rounded-full px-3 text-sm text-zinc-400 hover:text-white"
-            type="button"
-          >
-            <Eye className="h-4 w-4" />
-            Preview
-          </button>
-          <button
-            title="Code"
-            className="flex h-8 items-center gap-2 rounded-full bg-blue-500/15 px-3 text-sm font-medium text-blue-300"
-            type="button"
-          >
-            <Code2 className="h-4 w-4" />
-            Code
-          </button>
-          <button
-            title="Database"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-400 hover:text-white"
-            type="button"
-          >
-            <Database className="h-4 w-4" />
-          </button>
+      <div className="flex min-w-0 shrink items-center justify-end gap-3">
+        <div
+          className="hidden min-w-0 max-w-[44rem] rounded-lg border border-zinc-800 bg-zinc-950/80 px-3 py-1.5 text-xs font-medium leading-5 text-zinc-300 shadow-sm shadow-black/20 sm:block"
+          role="status"
+        >
+          <span className="block break-words">
+            {
+              "📱 Scan the Expo QR code in the terminal to preview on mobile, or visit localhost:8081"
+            }
+          </span>
         </div>
-
-        <button
-          title="History"
-          className="hidden h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-white sm:flex"
-          type="button"
-        >
-          <History className="h-4 w-4" />
-        </button>
-        <button
-          title="Settings"
-          className="hidden h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-white sm:flex"
-          type="button"
-        >
-          <Settings className="h-4 w-4" />
-        </button>
-        <button
-          title="GitHub"
-          className="hidden h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white lg:flex"
-          type="button"
-        >
-          <Code2 className="h-4 w-4" />
-        </button>
-        <Button
-          type="button"
-          variant="outline"
-          className="hidden border-zinc-800 bg-zinc-950 text-zinc-100 hover:bg-zinc-900 sm:inline-flex"
-        >
-          Share
-        </Button>
-        <Button
-          type="button"
-          className="bg-white text-zinc-950 hover:bg-zinc-200"
-        >
-          Publish
-        </Button>
         <UserButton />
       </div>
     </header>
+  );
+}
+
+function TurnBuildCard({
+  actions,
+  isBuilding,
+}: {
+  actions: Action[];
+  isBuilding: boolean;
+}) {
+  const fileUpdates = actions.filter((action) =>
+    /^Updated file/i.test(action.content),
+  ).length;
+  const commandRuns = actions.filter((action) =>
+    /^Ran command/i.test(action.content),
+  ).length;
+  const isReady = actions.some((action) => isReadyAction(action.content));
+  const visibleActions = actions.filter(
+    (action) => !isReadyAction(action.content),
+  );
+
+  return (
+    <section className="rounded-lg border border-zinc-900 bg-[#101014] p-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-base font-bold text-white">Mobile Magic</span>
+          <span className="rounded-md bg-zinc-800 px-2 py-1 font-mono text-xs text-zinc-300">
+            workspace
+          </span>
+        </div>
+        {isBuilding ? (
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-300">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Building
+          </span>
+        ) : isReady ? (
+          <span className="text-xs font-medium text-emerald-300">Ready</span>
+        ) : null}
+      </div>
+
+      <div className="mb-3 flex items-center gap-2 text-sm font-medium text-zinc-100">
+        <Activity className="h-4 w-4 text-zinc-500" />
+        Plan
+      </div>
+
+      <div className="space-y-3">
+        {visibleActions.length > 0 ? (
+          visibleActions.map((action) => {
+            const Icon = getActionIcon(action.content);
+
+            return (
+              <div
+                key={action.id}
+                className="flex items-start gap-3 text-sm text-zinc-200"
+              >
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Icon className="h-4 w-4 shrink-0 text-zinc-500" />
+                    <span className="truncate">
+                      {getActionLabel(action.content)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : isBuilding ? (
+          <>
+            <div className="flex items-start gap-3 text-sm text-zinc-300">
+              <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin text-blue-300" />
+              Thinking and preparing files
+            </div>
+            <div className="flex items-start gap-3 text-sm text-zinc-500">
+              <Circle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" />
+              Waiting for worker activity
+            </div>
+          </>
+        ) : (
+          <div className="flex items-start gap-3 text-sm text-zinc-500">
+            <Circle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" />
+            No file changes for this message
+          </div>
+        )}
+      </div>
+
+      <div className="mt-5 border-t border-zinc-800 pt-4 text-sm leading-6 text-zinc-300">
+        <p className="font-medium text-zinc-100">Build progress</p>
+        <ul className="mt-2 space-y-1 text-zinc-400">
+          <li>
+            {fileUpdates} file update{fileUpdates === 1 ? "" : "s"} written
+          </li>
+          <li>
+            {commandRuns} command{commandRuns === 1 ? "" : "s"} run
+          </li>
+          <li>
+            {isBuilding
+              ? "Working on your request"
+              : isReady
+                ? "You can run your app with npm run web"
+                : "Finished this step"}
+          </li>
+        </ul>
+      </div>
+    </section>
   );
 }
 
@@ -253,6 +276,7 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
   } = useAction(projectId);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
   const historyRef = useRef<HTMLDivElement>(null);
 
@@ -276,29 +300,35 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
     [prompts],
   );
 
-  const workspaceFiles = useMemo(() => {
-    const actionFiles = sortedActions
-      .map(getActionFilePath)
-      .filter((filePath): filePath is string => Boolean(filePath));
+  const chatTurns = useMemo<ChatTurn[]>(() => {
+    return userPrompts.map((prompt, index) => ({
+      id: prompt.id,
+      prompt,
+      actions: getTurnActions(prompt, userPrompts[index + 1], sortedActions),
+      isLatest: index === userPrompts.length - 1 && !pendingPrompt,
+    }));
+  }, [pendingPrompt, sortedActions, userPrompts]);
 
-    return actionFiles.length > 0
-      ? Array.from(new Set(actionFiles)).slice(-12)
-      : fallbackFiles;
-  }, [sortedActions]);
+  useEffect(() => {
+    if (!pendingPrompt) {
+      return;
+    }
 
-  const fileUpdates = sortedActions.filter((action) =>
-    /^Updated file/i.test(action.content),
-  ).length;
-  const commandRuns = sortedActions.filter((action) =>
-    /^Ran command/i.test(action.content),
-  ).length;
+    const hasMatchingPrompt = userPrompts.some(
+      (prompt) => prompt.content.trim() === pendingPrompt.trim(),
+    );
+
+    if (hasMatchingPrompt) {
+      setPendingPrompt(null);
+    }
+  }, [pendingPrompt, userPrompts]);
 
   useEffect(() => {
     historyRef.current?.scrollTo({
       top: historyRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [prompts.length, sortedActions.length]);
+  }, [chatTurns.length, pendingPrompt, sortedActions.length, isSending]);
 
   async function sendPrompt() {
     const prompt = message.trim();
@@ -309,6 +339,7 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
 
     setMessage("");
     setIsSending(true);
+    setPendingPrompt(prompt);
     setSendError(null);
 
     try {
@@ -318,6 +349,7 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
       });
     } catch (err) {
       setMessage(prompt);
+      setPendingPrompt(null);
       setSendError("Failed to send message");
     } finally {
       setIsSending(false);
@@ -338,269 +370,139 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0b0b0d] text-zinc-100">
-      <ActivityRail />
-
       <div className="flex min-w-0 flex-1 flex-col">
         <WorkspaceHeader projectTitle={projectTitle} />
 
         <div className="flex min-h-0 flex-1">
-          <aside className="flex w-[620px] shrink-0 flex-col border-r border-zinc-800 bg-[#0d0d10]">
+          <aside className="flex w-[380px] shrink-0 flex-col border-r border-zinc-800 bg-[#0d0d10] xl:w-[420px] 2xl:w-[460px]">
             <div
               ref={historyRef}
-              className="min-h-0 flex-1 overflow-y-auto px-6 py-5"
+              className="min-h-0 flex-1 overflow-y-auto px-5 py-4"
             >
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
                       Project
                     </p>
-                    <p className="mt-1 max-w-[420px] truncate text-lg font-semibold text-white">
+                    <p className="mt-1 max-w-[300px] truncate text-base font-semibold text-white">
                       {projectTitle}
                     </p>
                   </div>
-                  <span className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-sm font-medium text-emerald-300">
+                  <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-300">
                     Live
                   </span>
                 </div>
 
-                <section className="space-y-4">
-                  {isLoading ? (
-                    <div className="ml-auto h-16 w-56 animate-pulse rounded-xl bg-zinc-800" />
-                  ) : userPrompts.length === 0 ? (
-                    <div className="rounded-xl border border-dashed border-zinc-800 p-5 text-sm text-zinc-500">
+                {actionError && (
+                  <p className="text-xs text-red-400">{actionError}</p>
+                )}
+
+                <section className="space-y-5">
+                  {isLoading || isActionLoading ? (
+                    <div className="space-y-3">
+                      <div className="ml-auto h-16 w-56 animate-pulse rounded-xl bg-zinc-800" />
+                      <div className="h-40 animate-pulse rounded-lg bg-zinc-900" />
+                    </div>
+                  ) : chatTurns.length === 0 && !pendingPrompt ? (
+                    <div className="rounded-lg border border-dashed border-zinc-800 p-4 text-sm text-zinc-500">
                       No messages yet.
                     </div>
                   ) : (
-                    userPrompts.map((prompt) => (
-                      <article key={prompt.id} className="flex justify-end">
-                        <div className="max-w-[72%] rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 shadow-lg">
-                          <div className="mb-1 flex items-center justify-between gap-3 text-xs text-zinc-500">
-                            <span>You</span>
-                            <span>{getDisplayTime(prompt.createdAt)}</span>
-                          </div>
-                          <p className="whitespace-pre-wrap break-words text-sm leading-6 text-zinc-100">
-                            {prompt.content}
-                          </p>
-                        </div>
-                      </article>
-                    ))
-                  )}
-                </section>
-
-                <section className="rounded-xl border border-zinc-900 bg-[#101014] p-5 shadow-sm">
-                  <div className="mb-4 flex items-center gap-2">
-                    <span className="text-2xl font-black italic text-white">
-                      bolt
-                    </span>
-                    <span className="rounded-md bg-zinc-800 px-2 py-1 font-mono text-xs text-zinc-300">
-                      workspace
-                    </span>
-                  </div>
-
-                  <div className="mb-4 flex items-center gap-2 text-sm font-medium text-zinc-100">
-                    <Activity className="h-4 w-4 text-zinc-500" />
-                    Plan
-                  </div>
-
-                  <div className="space-y-3">
-                    {isActionLoading ? (
-                      Array.from({ length: 4 }).map((_, index) => (
-                        <div
-                          key={index}
-                          className="h-6 animate-pulse rounded bg-zinc-800/80"
-                        />
-                      ))
-                    ) : sortedActions.length > 0 ? (
-                      sortedActions.slice(-6).map((action) => {
-                        const Icon = getActionIcon(action.content);
-
-                        return (
-                          <div
-                            key={action.id}
-                            className="flex items-start gap-3 text-sm text-zinc-200"
-                          >
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-                            <div className="min-w-0 flex-1">
-                              <div className="flex min-w-0 items-center gap-2">
-                                <Icon className="h-4 w-4 shrink-0 text-zinc-500" />
-                                <span className="truncate">
-                                  {getActionLabel(action.content)}
+                    <>
+                      {chatTurns.map((turn) => (
+                        <div key={turn.id} className="space-y-3">
+                          <article className="flex justify-end">
+                            <div className="max-w-[82%] rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 shadow-lg">
+                              <div className="mb-1 flex items-center justify-between gap-3 text-xs text-zinc-500">
+                                <span>You</span>
+                                <span>
+                                  {getDisplayTime(turn.prompt.createdAt)}
                                 </span>
                               </div>
+                              <p className="whitespace-pre-wrap break-words text-sm leading-6 text-zinc-100">
+                                {turn.prompt.content}
+                              </p>
                             </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <>
-                        <div className="flex items-start gap-3 text-sm text-zinc-300">
-                          <Circle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" />
-                          Create a clean project workspace
-                        </div>
-                        <div className="flex items-start gap-3 text-sm text-zinc-300">
-                          <Circle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" />
-                          Write the requested app files
-                        </div>
-                        <div className="flex items-start gap-3 text-sm text-zinc-300">
-                          <Circle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" />
-                          Run the generated project
-                        </div>
-                      </>
-                    )}
-                  </div>
+                          </article>
 
-                  <div className="mt-5 border-t border-zinc-800 pt-4 text-sm leading-6 text-zinc-300">
-                    {actionError ? (
-                      <p className="text-red-300">{actionError}</p>
-                    ) : sortedActions.length > 0 ? (
-                      <>
-                        <p className="font-medium text-zinc-100">
-                          Build progress
-                        </p>
-                        <ul className="mt-2 space-y-1 text-zinc-400">
-                          <li>{fileUpdates} file updates written</li>
-                          <li>{commandRuns} commands run</li>
-                          <li>Workspace is ready for the next change</li>
-                        </ul>
-                      </>
-                    ) : (
-                      <p className="text-zinc-500">
-                        Waiting for the worker to report build activity.
-                      </p>
-                    )}
-                  </div>
+                          <TurnBuildCard
+                            actions={turn.actions}
+                            isBuilding={
+                              turn.isLatest &&
+                              (isSending ||
+                                !turn.actions.some((action) =>
+                                  isReadyAction(action.content),
+                                ))
+                            }
+                          />
+                        </div>
+                      ))}
+
+                      {pendingPrompt && (
+                        <div className="space-y-3">
+                          <article className="flex justify-end">
+                            <div className="max-w-[82%] rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 shadow-lg">
+                              <div className="mb-1 flex items-center justify-between gap-3 text-xs text-zinc-500">
+                                <span>You</span>
+                                <span>now</span>
+                              </div>
+                              <p className="whitespace-pre-wrap break-words text-sm leading-6 text-zinc-100">
+                                {pendingPrompt}
+                              </p>
+                            </div>
+                          </article>
+
+                          <TurnBuildCard actions={[]} isBuilding />
+                        </div>
+                      )}
+                    </>
+                  )}
                 </section>
               </div>
             </div>
 
             <form
               onSubmit={handleSubmit}
-              className="shrink-0 border-t border-zinc-800 p-5"
+              className="shrink-0 border-t border-zinc-800 p-4"
             >
               {(historyError || sendError) && (
                 <p className="mb-2 text-xs text-red-400">
                   {sendError ?? historyError}
                 </p>
               )}
-              <div className="rounded-xl border border-zinc-700 bg-zinc-900 shadow-[0_0_0_1px_rgba(59,130,246,0.12)] focus-within:border-blue-500/70">
+              <div className="rounded-lg border border-zinc-700 bg-zinc-900 shadow-[0_0_0_1px_rgba(59,130,246,0.12)] focus-within:border-blue-500/70">
                 <Textarea
                   value={message}
                   onChange={(event) => setMessage(event.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="How can Bolt help you today? (or /command)"
+                  placeholder="How can Mobile Magic help you today? (or /command)"
                   disabled={isSending}
-                  className="max-h-40 min-h-24 resize-none border-0 bg-transparent px-4 py-4 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-0"
+                  className="max-h-32 min-h-20 resize-none border-0 bg-transparent px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-0"
                 />
-                <div className="flex items-center justify-between gap-3 border-t border-zinc-800 px-3 py-3">
-                  <div className="flex items-center gap-2">
-                    <button
-                      title="Add"
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
-                      type="button"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                    <button
-                      className="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                      type="button"
-                    >
-                      Standard
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      className="hidden items-center gap-1 rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 sm:flex"
-                      type="button"
-                    >
-                      <MousePointer2 className="h-4 w-4" />
-                      Select
-                    </button>
-                    <button
-                      className="hidden items-center gap-1 rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 sm:flex"
-                      type="button"
-                    >
-                      <Lightbulb className="h-4 w-4" />
-                      Plan
-                    </button>
-                    <Button
-                      type="submit"
-                      size="icon"
-                      disabled={!message.trim() || isSending}
-                      className="rounded-full bg-blue-500 text-white hover:bg-blue-400"
-                      aria-label="Send message"
-                    >
-                      {isSending ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Send className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+                <div className="flex items-center justify-end border-t border-zinc-800 px-3 py-2.5">
+                  <Button
+                    type="submit"
+                    size="icon"
+                    disabled={!message.trim() || isSending}
+                    className="rounded-full bg-blue-500 text-white hover:bg-blue-400"
+                    aria-label="Send message"
+                  >
+                    {isSending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
               </div>
             </form>
           </aside>
 
-          <main className="min-w-0 flex-1 bg-[#111113] p-3">
-            <section className="flex h-full min-h-0 overflow-hidden rounded-xl border border-zinc-800 bg-[#151518]">
-              <aside className="hidden w-[292px] shrink-0 border-r border-zinc-800 bg-[#141417] lg:block">
-                <div className="flex h-12 items-center gap-6 border-b border-zinc-800 px-4">
-                  <button
-                    className="text-sm font-semibold text-zinc-100"
-                    type="button"
-                  >
-                    Files
-                  </button>
-                  <button className="text-sm text-zinc-500" type="button">
-                    Search
-                  </button>
-                </div>
-
-                <div className="space-y-1 px-3 py-3 text-sm">
-                  <button
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                    type="button"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    <Folder className="h-4 w-4" />
-                    .bolt
-                  </button>
-                  <button
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                    type="button"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    <Folder className="h-4 w-4" />
-                    app
-                  </button>
-                  <button
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                    type="button"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    <Folder className="h-4 w-4" />
-                    components
-                  </button>
-
-                  <div className="mt-3 border-t border-zinc-800 pt-3">
-                    {workspaceFiles.map((filePath) => (
-                      <button
-                        key={filePath}
-                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                        type="button"
-                      >
-                        <FileText className="h-4 w-4 shrink-0" />
-                        <span className="truncate">{filePath}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </aside>
-
+          <main className="min-w-0 flex-1 bg-[#111113] p-2">
+            <section className="flex h-full min-h-0 overflow-hidden rounded-lg border border-zinc-800 bg-[#151518]">
               <div className="flex min-w-0 flex-1 flex-col">
-                <div className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-800 bg-[#151518] px-4">
+                <div className="flex h-11 shrink-0 items-center justify-between border-b border-zinc-800 bg-[#151518] px-4">
                   <div className="flex items-center gap-2 text-sm text-zinc-400">
                     <FileText className="h-4 w-4" />
                     <span className="text-zinc-100">Code workspace</span>
@@ -617,54 +519,6 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
                     src={`${WORKER_URL}/`}
                     className="h-full w-full border-0"
                   />
-                </div>
-
-                <div className="h-[218px] shrink-0 border-t border-zinc-800 bg-[#101014]">
-                  <div className="flex h-12 items-center gap-2 border-b border-zinc-800 px-4">
-                    <span className="flex items-center gap-2 rounded-full bg-zinc-800 px-3 py-1.5 text-sm font-medium text-zinc-100">
-                      <Zap className="h-4 w-4 text-blue-300" />
-                      Bolt
-                    </span>
-                    <span className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400">
-                      <Rocket className="h-4 w-4" />
-                      Publish Output
-                    </span>
-                    <span className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400">
-                      <Terminal className="h-4 w-4" />
-                      Terminal
-                    </span>
-                  </div>
-
-                  <div className="h-[166px] overflow-y-auto px-5 py-4 font-mono text-xs leading-6">
-                    {sortedActions.length > 0 ? (
-                      sortedActions.slice(-8).map((action) => (
-                        <div key={action.id} className="flex gap-3">
-                          <span className="shrink-0 text-zinc-600">
-                            {getDisplayTime(action.createdAt)}
-                          </span>
-                          <span
-                            className={
-                              /^Ran command/i.test(action.content)
-                                ? "text-emerald-300"
-                                : "text-blue-300"
-                            }
-                          >
-                            [bolt]
-                          </span>
-                          <span className="truncate text-zinc-300">
-                            {action.content}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="space-y-1 text-zinc-500">
-                        <div>waiting for worker activity...</div>
-                        <div>
-                          generated files and command output will appear here
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             </section>

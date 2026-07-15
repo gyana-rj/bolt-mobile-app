@@ -1,5 +1,9 @@
 import { expect, test } from "bun:test";
-import { cleanFileContent } from "./os";
+import {
+  cleanFileContent,
+  ensureExpoPackageJson,
+  sanitizeExpoAppJson,
+} from "./os";
 import { ArtifactProcessor } from "./parser";
 import { systemPrompt } from "./systemPrompt";
 
@@ -47,7 +51,6 @@ test("Action with append", async () => {
     },
     (shellCommand) => {
       console.log(shellCommand);
-      expect(shellCommand).toContain("npm run start");
     },
   );
 
@@ -132,6 +135,58 @@ export default function App() {
   expect(cleanedContent).not.toContain("```");
 });
 
+test("ensureExpoPackageJson adds missing Expo Router runtime deps", () => {
+  const result = ensureExpoPackageJson(
+    JSON.stringify({
+      name: "todo",
+      dependencies: {
+        expo: "~51.0.0",
+        "expo-router": "~3.5.0",
+        react: "18.2.0",
+      },
+    }),
+  );
+  const pkg = JSON.parse(result);
+
+  expect(pkg.main).toBe("expo-router/entry");
+  expect(pkg.dependencies["expo-status-bar"]).toBe("~1.12.1");
+  expect(pkg.dependencies["react-native-screens"]).toBe("3.31.1");
+  expect(pkg.scripts.web).toBe("npx expo start --web");
+});
+
+test("sanitizeExpoAppJson removes missing binary asset refs", () => {
+  const result = sanitizeExpoAppJson(
+    JSON.stringify({
+      expo: {
+        name: "Todo",
+        icon: "./assets/icon.png",
+        splash: {
+          image: "./assets/splash.png",
+          backgroundColor: "#ffffff",
+        },
+        android: {
+          adaptiveIcon: {
+            foregroundImage: "./assets/adaptive-icon.png",
+            backgroundColor: "#ffffff",
+          },
+        },
+        web: {
+          favicon: "./assets/favicon.png",
+          bundler: "metro",
+        },
+      },
+    }),
+  );
+  const config = JSON.parse(result);
+
+  expect(config.expo.icon).toBeUndefined();
+  expect(config.expo.splash.image).toBeUndefined();
+  expect(config.expo.splash.backgroundColor).toBe("#ffffff");
+  expect(config.expo.android.adaptiveIcon.foregroundImage).toBeUndefined();
+  expect(config.expo.web.favicon).toBeUndefined();
+  expect(config.expo.web.bundler).toBe("metro");
+});
+
 test("System prompt includes current workspace files when provided", () => {
   const prompt = systemPrompt(
     "REACT_NATIVE",
@@ -149,6 +204,14 @@ test("System prompt tells the model to match local human code style", () => {
   expect(prompt).toContain("<human_code_style>");
   expect(prompt).toContain("local workspace as the source of truth");
   expect(prompt).toContain("not like a generic LLM output");
+});
+
+test("System prompt brands the assistant as Mobile Magic", () => {
+  const prompt = systemPrompt("REACT_NATIVE");
+
+  expect(prompt).toContain("You are Mobile Magic");
+  expect(prompt).toContain("Mobile Magic creates a SINGLE");
+  expect(prompt).not.toContain("You are Bolty");
 });
 
 test("System prompt omits workspace files for fresh projects", () => {

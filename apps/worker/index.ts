@@ -4,7 +4,13 @@ import { prismaClient } from "@bolt/db/client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { systemPrompt } from "./systemPrompt";
 import { ArtifactProcessor } from "./parser";
-import { onFileUpdate, onShellCommand, resetWorkerProject } from "./os";
+import {
+  flushPendingNpmInstall,
+  logProjectReady,
+  onFileUpdate,
+  onShellCommand,
+  resetWorkerProject,
+} from "./os";
 import { getLatestCodebaseState } from "./workspaceReader";
 
 const app = express();
@@ -98,6 +104,8 @@ app.post("/prompt", async (req, res) => {
     }
     await artifactProcessor.parse();
     console.log("Done!");
+    await flushPendingNpmInstall(projectId);
+    await logProjectReady(projectId);
 
     await prismaClient.prompt.create({
       data: {
