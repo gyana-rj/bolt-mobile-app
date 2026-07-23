@@ -87,25 +87,26 @@ export default function Prompt({ value, onChange, onSubmit }: PromptProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative w-full max-w-2xl rounded-2xl border border-zinc-800 bg-zinc-900/50 shadow-sm transition-all focus-within:border-zinc-600 focus-within:bg-zinc-900"
+      className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800/90 bg-[#121214]/90 shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors focus-within:border-zinc-600"
     >
       <Textarea
-        placeholder="Create a chess application..."
+        placeholder="e.g. A fitness tracker with workout logging, a step counter and a progress chart..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={isCreating}
-        className="w-full min-h-[120px] max-h-[300px] bg-transparent border-0 resize-none text-white placeholder-zinc-500 focus-visible:ring-0 focus-visible:ring-offset-0 p-6 text-lg leading-relaxed"
+        className="min-h-[140px] max-h-[300px] w-full resize-none border-0 bg-transparent p-5 pb-14 text-base leading-relaxed text-white placeholder:text-zinc-500 focus-visible:ring-0 focus-visible:ring-offset-0 md:text-[15px]"
       />
 
-      <div className="absolute bottom-3 right-3">
+      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-4 py-3">
+        <span className="text-xs text-zinc-600">Shift + Enter for new line</span>
         <Button
           type="submit"
           disabled={!value.trim() || isCreating}
           size="icon"
-          className="bg-white hover:bg-zinc-200 text-black rounded-xl h-10 w-10 flex items-center justify-center transition-all disabled:opacity-20 disabled:hover:bg-white cursor-pointer"
+          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#2B7FFF] text-white transition-all hover:bg-[#1A6FEF] disabled:opacity-30 disabled:hover:bg-[#2B7FFF]"
         >
-          <ArrowUp className="h-5 w-5" />
+          <ArrowUp className="h-4 w-4" />
         </Button>
       </div>
     </form>

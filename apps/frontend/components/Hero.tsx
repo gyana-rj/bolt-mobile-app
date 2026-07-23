@@ -9,34 +9,36 @@ export default function Hero() {
 
   const handleBuild = () => {
     if (!promptValue.trim()) return;
-    console.log("Triggering application assembly for:", promptValue);
   };
 
   return (
-    <section className="relative flex flex-col items-center justify-center flex-1 px-4 py-20 bg-zinc-950 text-white overflow-hidden">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
-      
-      <div className="relative z-10 text-center flex flex-col items-center w-full max-w-3xl mx-auto space-y-8">
-        
-        <div className="space-y-4">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
-            What do you want to build?
-          </h1>
-          {/* Increased text size to text-lg and made the color slightly brighter */}
-          <p className="text-zinc-300 text-lg font-medium">
-            Prompt, click generate and watch your app come to life.
-          </p>
+    <section className="relative flex w-full flex-col items-center justify-center px-4 py-8 text-white">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-800/80 bg-zinc-900/60 px-3.5 py-1.5 text-sm text-zinc-300 backdrop-blur-sm">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          </span>
+          Now available · React Native for iOS & Android
         </div>
-        
-        <div className="w-full flex flex-col items-center gap-6">
-          <Prompt 
-            value={promptValue} 
-            onChange={setPromptValue} 
-            onSubmit={handleBuild} 
+
+        <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-[3.25rem]">
+          What do you want to build?
+        </h1>
+
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg">
+          Describe your app in plain English. We turn your prompt into
+          production-ready React Native code — ready to run on any device.
+        </p>
+
+        <div className="mt-10 flex w-full flex-col items-center gap-5">
+          <Prompt
+            value={promptValue}
+            onChange={setPromptValue}
+            onSubmit={handleBuild}
           />
           <TemplateButtons onSelectTemplate={setPromptValue} />
         </div>
-
       </div>
     </section>
   );

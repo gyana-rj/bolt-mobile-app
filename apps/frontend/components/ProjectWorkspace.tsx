@@ -136,7 +136,7 @@ function WorkspaceHeader({ projectTitle }: { projectTitle: string }) {
             href="/"
             className="text-lg font-bold text-white hover:opacity-90"
           >
-            Mobile Magic
+            App Forge
           </Link>
           <span>/</span>
         </div>
@@ -184,7 +184,7 @@ function TurnBuildCard({
     <section className="rounded-lg border border-zinc-900 bg-[#101014] p-4 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-base font-bold text-white">Mobile Magic</span>
+          <span className="text-base font-bold text-white">App Forge</span>
           <span className="rounded-md bg-zinc-800 px-2 py-1 font-mono text-xs text-zinc-300">
             workspace
           </span>
@@ -476,7 +476,7 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
                   value={message}
                   onChange={(event) => setMessage(event.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="How can Mobile Magic help you today? (or /command)"
+                  placeholder="How can App Forge help you today? (or /command)"
                   disabled={isSending}
                   className="max-h-32 min-h-20 resize-none border-0 bg-transparent px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-0"
                 />

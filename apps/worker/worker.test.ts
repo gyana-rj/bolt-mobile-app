@@ -206,11 +206,11 @@ test("System prompt tells the model to match local human code style", () => {
   expect(prompt).toContain("not like a generic LLM output");
 });
 
-test("System prompt brands the assistant as Mobile Magic", () => {
+test("System prompt brands the assistant as App Forge", () => {
   const prompt = systemPrompt("REACT_NATIVE");
 
-  expect(prompt).toContain("You are Mobile Magic");
-  expect(prompt).toContain("Mobile Magic creates a SINGLE");
+  expect(prompt).toContain("You are App Forge");
+  expect(prompt).toContain("App Forge creates a SINGLE");
   expect(prompt).not.toContain("You are Bolty");
 });
 
