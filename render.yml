@@ -27,6 +27,6 @@ services:
         sync: false
       - key: DIRECT_URL
         sync: false
-      - key: GEMINI_AI_KEY
+      - key: GEMINI_API_KEY
         sync: false
 

@@ -16,9 +16,12 @@ COPY apps/backend ./apps/backend
 
 RUN bun install
 
+# Generate the Prisma client (output lives under packages/db/generated)
+RUN bun run --filter db db:generate
+
 RUN bun run --filter=backend build
 
-FROM node:20-alpine AS runner 
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
@@ -28,6 +31,7 @@ RUN npm install -g bun
 
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/backend ./apps/backend
 
 EXPOSE 9090

@@ -120,6 +120,7 @@ app.get("/actions/:projectId", authMiddleware, async (req, res) => {
   res.json({ actions });
 });
 
-app.listen(9090, () => {
-  console.log("Server is running on port 9090");
+const PORT = process.env.PORT ? Number(process.env.PORT) : 9090;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

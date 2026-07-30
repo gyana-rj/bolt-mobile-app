@@ -323,6 +323,7 @@ app.get("/expo/session", (_req, res) => {
   res.json({ status, url, error, logs });
 });
 
-app.listen(9091, () => {
-  console.log("Server is running on port 9091");
+const PORT = process.env.PORT ? Number(process.env.PORT) : 9091;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

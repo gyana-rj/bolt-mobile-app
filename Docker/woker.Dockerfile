@@ -8,7 +8,7 @@ COPY ./package.json ./package.json
 
 COPY ./turbo.json ./turbo.json
 
-COPY ./bun.lock. ./bun.lock
+COPY ./bun.lock ./bun.lock
 
 COPY ./packages ./packages
 
@@ -16,7 +16,9 @@ COPY apps/worker ./apps/worker
 
 RUN bun install
 
-RUN bun run --filter=worker build
+# Generate the Prisma client (output lives under packages/db/generated).
+# The worker runs its TypeScript entrypoint directly, so no build step is needed.
+RUN bun run --filter db db:generate
 
 FROM node:20-alpine AS runner
 
@@ -36,11 +38,14 @@ RUN npm install -g bun
 RUN apk add --no-cache libstdc++ gcompat \
     && npm install -g pnpm@9 @expo/ngrok@^4.1.0
 
-COPY --from=builder app/package.json ./
+COPY --from=builder /app/package.json ./
 
-COPY --from=builder app/node_modules ./node_modules
+COPY --from=builder /app/node_modules ./node_modules
+
+COPY --from=builder /app/packages ./packages
 
 COPY --from=builder /app/apps/worker ./apps/worker
 
+EXPOSE 9091
 
 CMD [ "bun", "run", "apps/worker/index.ts" ]
