@@ -27,9 +27,9 @@ const STEPS = [
   },
   {
     icon: MonitorPlay,
-    title: "Run the app in VS Code",
+    title: "Preview your app live",
     description:
-      "Watch file updates and build steps as they happen. When generation finishes, open the project in VS Code and manually type npm run web in the terminal to run the app.",
+      "Watch file updates and build steps as they happen. When generation finishes, your app builds and runs automatically in the Preview tab — no commands to type.",
   },
   {
     icon: FolderOpen,
@@ -55,7 +55,7 @@ export default function Docs() {
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-zinc-400">
             Prompt your way from idea to a working React Native app. Here is the
-            flow from first prompt to running it locally.
+            flow from first prompt to a live preview.
           </p>
         </div>
 
@@ -100,12 +100,12 @@ export default function Docs() {
               to add features or fix issues.
             </li>
             <li>
-              The app does not start automatically — after code is generated,
-              open a terminal in VS Code and run{" "}
+              Your app starts automatically once the build finishes — switch to
+              the{" "}
               <code className="rounded bg-zinc-800 px-1.5 py-0.5 text-zinc-300">
-                npm run web
+                Preview
               </code>{" "}
-              yourself.
+              tab to see it running live.
             </li>
           </ul>
         </div>

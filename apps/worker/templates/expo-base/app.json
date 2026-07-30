@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "expo-app",
+    "slug": "expo-app",
+    "version": "1.0.0",
+    "scheme": "expoapp",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router"]
+  }
+}

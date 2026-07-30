@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: bolty-backend
+    env: node
+    region: ohio
+    buildCommand: bun install && bun --filter backend build 
+    startCommand: bun --filter db dlx prisma migrate deploy && bun --filter backend start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+    
+  
+  - type: worker
+    name: bolty-worker
+    env: node
+    region: ohio
+    buildCommand: bun install && bun --filter worker build
+    startCommand: bun --filter worker start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: GEMINI_AI_KEY
+        sync: false
+

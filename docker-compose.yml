@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: bolty_postgres
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: bolty_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Docker/backend.Dockerfile
+    container_name: bolty_backend
+    ports:
+      - "9090:9090"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/bolty_db
+    depends_on:
+      - postgres
+  
+  worker-orchestrator:
+    build:
+      context: .
+      dockerfile: Docker/worker-orchestrator.Dockerfile
+    container_name: bolty_worker_orchestrator
+    ports:
+      - "9092:9092"
+    environment:
+      - AWS_REGION=ap-south-1
+    depends_on:
+      - postgres
+  
+  worker:
+    build:
+      context: .
+      dockerfile: Docker/woker.Dockerfile
+    container_name: bolty_worker
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/bolty_db
+      - BASE_WORK_DIR=/tmp/bolty-worker
+    volumes:
+      - bolty_workspace:/tmp/bolty-worker
+    depends_on:
+      - postgres
+      - backend
+  
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Docker/frontend.Dockerfile
+    container_name: bolty_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    
+  
+  code-server:
+    build:
+      context: .
+      dockerfile: Docker/code-server.Dockerfile
+    container_name: bolty_code_server
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - bolty_workspace:/tmp/bolty-worker
+
+volumes:
+  postgres_data:
+  bolty_workspace:

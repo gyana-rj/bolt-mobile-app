@@ -128,3 +128,59 @@
     @apply font-sans;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Landing page theme — scoped cream palette (Professional Landing Page
+   Design). Only elements inside .landing-theme use these overrides, so
+   the rest of the app keeps its own palette. The .dark variant below
+   follows the theme toggle.                                           */
+/* ------------------------------------------------------------------ */
+.landing-theme {
+  --background: #f2efe6;
+  --foreground: #16150f;
+  --card: #eceadf;
+  --card-foreground: #16150f;
+  --popover: #f2efe6;
+  --popover-foreground: #16150f;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --secondary: #e6e3d7;
+  --secondary-foreground: #16150f;
+  --muted: #e6e3d7;
+  --muted-foreground: #78746a;
+  --accent: #4f46e5;
+  --accent-foreground: #ffffff;
+  --accent-soft: rgba(79, 70, 229, 0.09);
+  --border: rgba(22, 21, 15, 0.12);
+  --input: rgba(22, 21, 15, 0.03);
+  --input-background: #eceadf;
+  --ring: #4f46e5;
+  --font-display: var(--font-archivo), 'Inter', ui-sans-serif, sans-serif;
+  --font-geist-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Dark counterpart — warm charcoal so it still reads as the same brand. */
+.dark .landing-theme {
+  --background: #12110d;
+  --foreground: #f2efe6;
+  --card: #1b1a15;
+  --card-foreground: #f2efe6;
+  --popover: #1b1a15;
+  --popover-foreground: #f2efe6;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #24231c;
+  --secondary-foreground: #f2efe6;
+  --muted: #24231c;
+  --muted-foreground: #a29d8f;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
+  --accent-soft: rgba(99, 102, 241, 0.16);
+  --border: rgba(242, 239, 230, 0.12);
+  --input: rgba(242, 239, 230, 0.05);
+  --input-background: #1b1a15;
+  --ring: #6366f1;
+}

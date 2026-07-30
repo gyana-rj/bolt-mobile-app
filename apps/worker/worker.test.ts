@@ -3,6 +3,7 @@ import {
   cleanFileContent,
   ensureExpoPackageJson,
   sanitizeExpoAppJson,
+  writeWorkspaceFile,
 } from "./os";
 import { ArtifactProcessor } from "./parser";
 import { systemPrompt } from "./systemPrompt";
@@ -218,4 +219,37 @@ test("System prompt omits workspace files for fresh projects", () => {
   const prompt = systemPrompt("REACT_NATIVE");
 
   expect(prompt).not.toContain("<workspace_files>");
+});
+
+test("writeWorkspaceFile rejects path traversal", async () => {
+  const result = await writeWorkspaceFile("../escape.txt", "nope");
+  expect(result.ok).toBe(false);
+  if (!result.ok) {
+    expect(result.error).toContain("Invalid");
+  }
+});
+
+test("writeWorkspaceFile rejects protected template files", async () => {
+  const result = await writeWorkspaceFile("package.json", "{}");
+  expect(result.ok).toBe(false);
+  if (!result.ok) {
+    expect(result.error).toContain("protected");
+  }
+});
+
+test("writeWorkspaceFile persists editable source files", async () => {
+  const result = await writeWorkspaceFile(
+    "app/user-edit-test.tsx",
+    "export default function UserEdit() { return null; }",
+  );
+  expect(result.ok).toBe(true);
+
+  const file = Bun.file("/tmp/bolty-worker/app/user-edit-test.tsx");
+  expect(await file.exists()).toBe(true);
+  expect(await file.text()).toContain("UserEdit");
+
+  await Bun.write(file, "");
+  await import("node:fs/promises").then((fs) =>
+    fs.rm("/tmp/bolty-worker/app/user-edit-test.tsx", { force: true }),
+  );
 });

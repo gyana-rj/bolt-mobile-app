@@ -75,6 +75,74 @@ async function collectFiles(currentDir: string): Promise<string[]> {
   return files;
 }
 
+// WebContainer's FileSystemTree shape. Declared locally so the worker doesn't
+// need a dependency on @webcontainer/api just for this type.
+export type FileSystemTree = {
+  [name: string]:
+    { file: { contents: string } } | { directory: FileSystemTree };
+};
+
+async function buildTree(currentDir: string): Promise<FileSystemTree> {
+  // The workspace is written and reset concurrently while the frontend polls
+  // this snapshot, so entries can vanish between listing and reading. Every read
+  // is best-effort: a disappeared file or directory is skipped, not fatal.
+  const entries = await readdir(currentDir, { withFileTypes: true }).catch(
+    () => null,
+  );
+  if (!entries) {
+    return {};
+  }
+
+  const tree: FileSystemTree = {};
+
+  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    if (entry.isDirectory()) {
+      if (!ignoredDirs.includes(entry.name)) {
+        tree[entry.name] = {
+          directory: await buildTree(join(currentDir, entry.name)),
+        };
+      }
+      continue;
+    }
+
+    // The snapshot must carry the pnpm lockfile (excluded from the AI context)
+    // so the browser install is fast; node_modules stays excluded via
+    // `ignoredDirs` above.
+    const includeInSnapshot =
+      entry.name === "pnpm-lock.yaml" || canRead(entry.name);
+
+    if (entry.isFile() && includeInSnapshot) {
+      const contents = await readFile(
+        join(currentDir, entry.name),
+        "utf-8",
+      ).catch(() => null);
+      if (contents !== null) {
+        tree[entry.name] = { file: { contents } };
+      }
+    }
+  }
+
+  return tree;
+}
+
+// Returns the current workspace as a WebContainer FileSystemTree so the browser
+// sandbox can mount and run exactly what the worker generated. Empty tree if the
+// workspace hasn't been created yet.
+export async function getFileSystemTree(): Promise<FileSystemTree> {
+  try {
+    await stat(BASE_WORKER_DIR);
+  } catch {
+    return {};
+  }
+
+  try {
+    return await buildTree(BASE_WORKER_DIR);
+  } catch (error) {
+    console.error("Error building file system tree from workspace: ", error);
+    return {};
+  }
+}
+
 export async function getLatestCodebaseState(): Promise<string> {
   try {
     await stat(BASE_WORKER_DIR);

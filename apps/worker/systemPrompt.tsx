@@ -230,7 +230,7 @@ const REACT_NATIVE_ARTIFACT_INFO = `
   The worker starts from a clean project directory for the first generation of each project.
   Do not assume any starter screen, sample component, themed helper, constants file, asset, or tab layout exists.
   Do not use or import boilerplate helpers such as ThemedText, ThemedView, ParallaxScrollView, HelloWave, IconSymbol, Colors, or useColorScheme unless you create their complete files in the same response.
-  Create every file the app needs from scratch, including package.json, app.json, tsconfig.json, and the app directory files.
+  The project already contains a base Expo template: package.json, app.json, tsconfig.json, and a pnpm lockfile with Expo SDK 51, React, React Native, Expo Router, react-native-web, and @expo/metro-runtime preinstalled and pinned. Do NOT create or overwrite package.json, app.json, or tsconfig.json. Only create the application source files.
   Prefer a simple Expo Router structure: app/_layout.tsx and app/index.tsx unless the user asks for multiple screens.
   Keep the generated app focused on the user request and remove starter-template routes, sample screens, unused assets, and unused imports.
 </framework_info>
@@ -238,18 +238,13 @@ const REACT_NATIVE_ARTIFACT_INFO = `
 <file_rules>
   1. File paths are relative to the project root, not src/.
   2. For file actions, put only the final file contents inside the boltAction. Never put boltAction or boltArtifact tags inside a file body.
-  3. A fresh React Native app should include a minimal package.json with Expo, React, React Native, Expo Router, and any extra dependencies needed by the requested app.
+  3. Do NOT write package.json, app.json, or tsconfig.json. The base template already provides them, with Expo Router runtime deps, react-native-web, and "main": "expo-router/entry" configured for Expo SDK 51.
   4. Use inline StyleSheet styles or local components you create. Avoid references to files that are not created in the same response.
-  5. Before running a dev command, write the required package.json and source files first.
-  6. Use Expo SDK-compatible pinned React versions in package.json. For Expo SDK 51 use "expo": "~51.0.0", "react": "18.2.0", "react-dom": "18.2.0", "react-native": "0.74.5", "react-native-web": "~0.19.10", and "expo-router": "~3.5.0". Do not use caret ranges for react or react-dom.
-  7. Include a web script that can run without a global Expo install: "web": "npx expo start --web". The start, ios, and android scripts should also use "npx expo ...".
-  8. CRITICAL: package.json MUST set "main": "expo-router/entry". Never omit this. Without it Expo uses AppEntry.js and fails with Unable to resolve "../../App".
-  9. Include Expo Router runtime dependencies in package.json: "expo-status-bar": "~1.12.1", "expo-linking": "~6.3.1", "expo-constants": "~16.0.2", "react-native-safe-area-context": "4.10.5", "react-native-screens": "3.31.1", "react-native-gesture-handler": "~2.16.1", and "react-native-reanimated": "~3.10.1".
-  10. If you use icon libraries such as lucide-react-native, include their required peer dependencies such as react-native-svg.
-  11. Do not create .png, .jpg, .jpeg, or .webp files as text placeholders. Omit icon, splash.image, android adaptiveIcon foregroundImage, and web.favicon from app.json unless you can provide a real binary asset.
-  12. After writing ALL source files, run exactly one "npm install"; do not run "npm run web" or "expo start" automatically.
-  13. Always include "expo-status-bar" in package.json dependencies. Missing it causes Expo Router web bundling to fail.
-  14. Do not create App.tsx or App.js at the project root when using Expo Router. Use app/_layout.tsx and app/index.tsx only.
+  5. To add packages beyond the base template, emit exactly ONE shell action listing only the additional package names, e.g. <boltAction type="shell">expo install lucide-react-native react-native-svg</boltAction>. The worker merges these into the base package.json. Do not pin versions unless a specific version is required.
+  6. Do not run "npm install", "pnpm install", "npm run web", or "expo start". The preview installs dependencies and starts the Expo web server automatically.
+  7. If you use icon libraries such as lucide-react-native, include their required peer dependencies such as react-native-svg in the same expo install action.
+  8. Do not create .png, .jpg, .jpeg, or .webp files as text placeholders.
+  9. Do not create App.tsx or App.js at the project root when using Expo Router. Use app/_layout.tsx and app/index.tsx only.
 </file_rules>
 `;
 

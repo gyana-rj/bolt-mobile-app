@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { WORKER_API_URL, WORKER_URL } from "@/config";
+import CodeWorkspace from "@/components/CodeWorkspace";
+import { WebContainerProvider } from "@/components/WebContainerProvider";
+import { WORKER_API_URL } from "@/config";
 import { type Action, useAction } from "@/hooks/useAction";
 import { type Prompt, usePrompts } from "@/hooks/usePrompt";
 import { UserButton } from "@clerk/nextjs";
@@ -13,6 +15,8 @@ import {
   Circle,
   FileText,
   Loader2,
+  PanelLeftClose,
+  PanelLeftOpen,
   Send,
   Terminal,
   Zap,
@@ -84,7 +88,7 @@ function getActionLabel(content: string) {
     .replace(/^Queued command\s+/i, "Queue ")
     .replace(/^Skipped auto-start command\s+/i, "Skip ")
     .replace(
-      /^You can run your app with npm run web$/i,
+      /^You can run your app with (?:npm|pnpm) run web$/i,
       "You can run your app",
     )
     .replace(/^Started clean project workspace$/i, "Start clean workspace");
@@ -108,7 +112,11 @@ function getActionIcon(content: string) {
 }
 
 function isReadyAction(content: string) {
-  return /^You can run your app with npm run web$/i.test(content);
+  return (
+    /^Your app is ready\b/i.test(content) ||
+    // Backward-compat: older projects logged a "run it yourself" message.
+    /^You can run your app with (?:npm|pnpm) run web$/i.test(content)
+  );
 }
 
 function getTurnActions(
@@ -127,10 +135,34 @@ function getTurnActions(
   });
 }
 
-function WorkspaceHeader({ projectTitle }: { projectTitle: string }) {
+function WorkspaceHeader({
+  projectTitle,
+  chatCollapsed,
+  onToggleChat,
+}: {
+  projectTitle: string;
+  chatCollapsed: boolean;
+  onToggleChat: () => void;
+}) {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-zinc-800 bg-[#0d0d10] px-5">
       <div className="flex min-w-0 flex-1 items-center gap-3">
+        <button
+          type="button"
+          onClick={onToggleChat}
+          className="flex h-9 shrink-0 items-center gap-2 rounded-md border border-zinc-700 bg-zinc-800/80 px-3 text-sm font-medium text-zinc-100 shadow-sm transition-colors hover:border-blue-500/60 hover:bg-zinc-700"
+          aria-label={chatCollapsed ? "Show chat panel" : "Hide chat panel"}
+          title={chatCollapsed ? "Show chat panel" : "Hide chat panel"}
+        >
+          {chatCollapsed ? (
+            <PanelLeftOpen className="h-4 w-4 text-blue-400" />
+          ) : (
+            <PanelLeftClose className="h-4 w-4 text-blue-400" />
+          )}
+          <span className="hidden sm:inline">
+            {chatCollapsed ? "Show chat" : "Hide chat"}
+          </span>
+        </button>
         <div className="flex items-center gap-2 text-zinc-500">
           <Link
             href="/"
@@ -146,16 +178,6 @@ function WorkspaceHeader({ projectTitle }: { projectTitle: string }) {
       </div>
 
       <div className="flex min-w-0 shrink items-center justify-end gap-3">
-        <div
-          className="hidden min-w-0 max-w-[44rem] rounded-lg border border-zinc-800 bg-zinc-950/80 px-3 py-1.5 text-xs font-medium leading-5 text-zinc-300 shadow-sm shadow-black/20 sm:block"
-          role="status"
-        >
-          <span className="block break-words">
-            {
-              "📱 Scan the Expo QR code in the terminal to preview on mobile, or visit localhost:8081"
-            }
-          </span>
-        </div>
         <UserButton />
       </div>
     </header>
@@ -258,7 +280,7 @@ function TurnBuildCard({
             {isBuilding
               ? "Working on your request"
               : isReady
-                ? "You can run your app with npm run web"
+                ? "Your app is running in the Preview tab"
                 : "Finished this step"}
           </li>
         </ul>
@@ -275,6 +297,7 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
     error: actionError,
   } = useAction(projectId);
   const [message, setMessage] = useState("");
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
@@ -293,6 +316,20 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
   const projectTitle = useMemo(
     () => getProjectTitle(prompts, projectId),
     [projectId, prompts],
+  );
+
+  // The worker logs this action once the generated app is ready to run.
+  const isProjectReady = useMemo(
+    () => sortedActions.some((action) => isReadyAction(action.content)),
+    [sortedActions],
+  );
+
+  // One ready-marker is logged per completed build, so this counts how many
+  // times the app has been (re)generated. The preview/QR mounted at an earlier
+  // count is stale — see CodeWorkspace, which drives the refresh prompts.
+  const buildCount = useMemo(
+    () => sortedActions.filter((action) => isReadyAction(action.content)).length,
+    [sortedActions],
   );
 
   const userPrompts = useMemo(
@@ -371,10 +408,18 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
   return (
     <div className="flex h-screen overflow-hidden bg-[#0b0b0d] text-zinc-100">
       <div className="flex min-w-0 flex-1 flex-col">
-        <WorkspaceHeader projectTitle={projectTitle} />
+        <WorkspaceHeader
+          projectTitle={projectTitle}
+          chatCollapsed={isChatCollapsed}
+          onToggleChat={() => setIsChatCollapsed((v) => !v)}
+        />
 
         <div className="flex min-h-0 flex-1">
-          <aside className="flex w-[380px] shrink-0 flex-col border-r border-zinc-800 bg-[#0d0d10] xl:w-[420px] 2xl:w-[460px]">
+          <aside
+            className={`${
+              isChatCollapsed ? "hidden" : "flex"
+            } w-[380px] shrink-0 flex-col border-r border-zinc-800 bg-[#0d0d10] xl:w-[420px] 2xl:w-[460px]`}
+          >
             <div
               ref={historyRef}
               className="min-h-0 flex-1 overflow-y-auto px-5 py-4"
@@ -500,28 +545,13 @@ export default function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
           </aside>
 
           <main className="min-w-0 flex-1 bg-[#111113] p-2">
-            <section className="flex h-full min-h-0 overflow-hidden rounded-lg border border-zinc-800 bg-[#151518]">
-              <div className="flex min-w-0 flex-1 flex-col">
-                <div className="flex h-11 shrink-0 items-center justify-between border-b border-zinc-800 bg-[#151518] px-4">
-                  <div className="flex items-center gap-2 text-sm text-zinc-400">
-                    <FileText className="h-4 w-4" />
-                    <span className="text-zinc-100">Code workspace</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-zinc-500">
-                    <span>TypeScript</span>
-                    <span>Expo</span>
-                  </div>
-                </div>
-
-                <div className="min-h-0 flex-1 bg-zinc-950">
-                  <iframe
-                    title={`Project ${projectId} code workspace`}
-                    src={`${WORKER_URL}/`}
-                    className="h-full w-full border-0"
-                  />
-                </div>
-              </div>
-            </section>
+            <WebContainerProvider ready={isProjectReady}>
+              <CodeWorkspace
+                projectId={projectId}
+                ready={isProjectReady}
+                buildCount={buildCount}
+              />
+            </WebContainerProvider>
           </main>
         </div>
       </div>

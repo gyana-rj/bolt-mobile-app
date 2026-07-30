@@ -1,9 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
 const isPublicRoute = createRouteMatcher([
-  '/', 
-  '/sign-in(.*)', 
-  '/sign-up(.*)'
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  // WebContainer preview handshake — must stay public so a new tab can
+  // reach setupConnect() without a Clerk redirect (which drops window.opener).
+  '/webcontainer/connect(.*)',
 ])
 
 export default clerkMiddleware(async (auth, request) => {
