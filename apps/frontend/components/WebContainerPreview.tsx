@@ -20,6 +20,40 @@ function parseBundlePercent(line: string): number | null {
   return Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : null;
 }
 
+// Light-hearted lines shown while the (free-tier) sandbox spins up, so a slow
+// first build feels intentional and friendly rather than broken.
+const WAIT_QUIPS = [
+  "Waking up the free-tier hamsters that power our servers… 🐹",
+  "Compiling your app with love and a single CPU core… 💙",
+  "Free servers run on hope, coffee, and a bit of duct tape ☕🔧",
+  "No fast lane on the free tier, but we're hustling for you 🏃💨",
+  "Bribing the cloud gremlins to hurry things along… 👾",
+  "Assembling pixels one by one — free plans take the scenic route 🛤️",
+];
+
+/** Rotating funny line + a steady "be patient, it's a free instance" note. */
+function FreeTierWaitNote({ className = "" }: { className?: string }) {
+  const [index, setIndex] = useState(() =>
+    Math.floor(Math.random() * WAIT_QUIPS.length),
+  );
+  useEffect(() => {
+    const id = window.setInterval(
+      () => setIndex((n) => (n + 1) % WAIT_QUIPS.length),
+      3500,
+    );
+    return () => window.clearInterval(id);
+  }, []);
+  return (
+    <div className={`max-w-sm text-xs leading-5 ${className}`}>
+      <p className="text-zinc-300">{WAIT_QUIPS[index]}</p>
+      <p className="mt-1 text-zinc-500">
+        Heads up: this is running on a free instance, so it can take a little
+        while. Thanks for your patience! 🙏
+      </p>
+    </div>
+  );
+}
+
 interface WebContainerPreviewProps {
   /** Whether the Expo log overlay is visible (controlled from the workspace header). */
   showLogs?: boolean;
@@ -129,13 +163,8 @@ export default function WebContainerPreview({
     return (
       <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-zinc-950 p-8 text-center">
         <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
-        <div>
-          <p className="text-sm font-medium text-zinc-100">{statusMessage}</p>
-          <p className="mt-1 text-xs text-zinc-500">
-            Setting up your app — this can take a minute on first run. Please
-            wait…
-          </p>
-        </div>
+        <p className="text-sm font-medium text-zinc-100">{statusMessage}</p>
+        <FreeTierWaitNote />
         <p className="text-xs text-zinc-600">{elapsed}s elapsed</p>
       </div>
     );
@@ -167,10 +196,10 @@ export default function WebContainerPreview({
             <div className="mt-1 text-sm font-medium text-zinc-100">
               {status || "Bundling your app…"}
             </div>
-            <p className="max-w-sm text-xs text-zinc-500">
-              Building the JavaScript bundle for the first time. Please wait a
-              moment. To run it on your phone, use “Open on phone” for a
-              scannable Expo Go code.
+            <FreeTierWaitNote />
+            <p className="max-w-sm text-[11px] text-zinc-600">
+              Want it on your phone? Tap “Open on phone” for a scannable Expo Go
+              code.
             </p>
 
             <div className="w-full max-w-xs">
@@ -217,11 +246,18 @@ export default function WebContainerPreview({
             >
               {error ?? status}
             </p>
-            <p className="mt-1 text-xs text-zinc-500">
-              {error
-                ? "Something went wrong starting the preview."
-                : `Setting up your app preview — ${elapsed}s elapsed`}
-            </p>
+            {error ? (
+              <p className="mt-1 text-xs text-zinc-500">
+                Something went wrong starting the preview.
+              </p>
+            ) : (
+              <>
+                <FreeTierWaitNote className="mt-3 text-center" />
+                <p className="mt-2 text-xs text-zinc-600">
+                  {elapsed}s elapsed
+                </p>
+              </>
+            )}
           </div>
 
           {logs.length > 0 && (

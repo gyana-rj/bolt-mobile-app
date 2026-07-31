@@ -1,7 +1,9 @@
 "use client";
 
 import CodeEditor from "@/components/CodeEditor";
-import PhoneExpoPanel from "@/components/PhoneExpoPanel";
+// PhoneExpoPanel (Expo Go tunnel QR) is temporarily disabled — the tunnel only
+// works while the local worker runs, so we show a "coming soon" note instead.
+// Re-enable by rendering <PhoneExpoPanel projectId={projectId} buildCount={buildCount} />.
 import { useWebContainer } from "@/components/WebContainerProvider";
 import WebContainerPreview from "@/components/WebContainerPreview";
 import WebContainerTerminal from "@/components/WebContainerTerminal";
@@ -18,6 +20,7 @@ import {
   File as FileIcon,
   QrCode,
   RefreshCw,
+  Smartphone,
   ScrollText,
   Terminal,
   X,
@@ -449,7 +452,7 @@ export default function CodeWorkspace({
                     ? "bg-zinc-800 text-zinc-100"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
-                title="Open the native app in Expo Go on your phone"
+                title="Open on phone — coming soon"
               >
                 <QrCode className="h-4 w-4 text-blue-400" />
                 Open on phone
@@ -457,14 +460,24 @@ export default function CodeWorkspace({
             )}
 
             {ready && showPhoneQr && (
-              <div className="absolute left-0 top-full z-40 mt-2 flex flex-col items-center gap-2 rounded-xl border border-zinc-800 bg-[#101014] p-4 shadow-2xl">
-                <PhoneExpoPanel projectId={projectId} buildCount={buildCount} />
+              <div className="absolute left-0 top-full z-40 mt-2 flex w-[264px] flex-col items-center gap-3 rounded-xl border border-zinc-800 bg-[#101014] p-5 text-center shadow-2xl">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-blue-500/30 bg-blue-500/10">
+                  <Smartphone className="h-5 w-5 text-blue-400" />
+                </div>
+                <p className="text-sm font-semibold text-zinc-100">
+                  Open on phone — coming soon
+                </p>
+                <p className="text-xs leading-5 text-zinc-500">
+                  Scanning your app straight into Expo Go is still in
+                  development. We&apos;re polishing it and it&apos;ll land soon —
+                  thanks for your patience! 🙏
+                </p>
                 <button
                   type="button"
                   onClick={() => setShowPhoneQr(false)}
-                  className="text-[11px] text-zinc-500 hover:text-zinc-300"
+                  className="mt-1 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:border-zinc-600 hover:text-zinc-100"
                 >
-                  Close
+                  Got it
                 </button>
               </div>
             )}
