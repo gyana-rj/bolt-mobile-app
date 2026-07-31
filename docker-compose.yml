@@ -39,7 +39,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Docker/woker.Dockerfile
+      dockerfile: Docker/worker.Dockerfile
     container_name: bolty_worker
     environment:
       - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/bolty_db

@@ -127,6 +127,12 @@ async function generateWithResilience(
   throw lastRetryableError ?? lastError;
 }
 
+app.get("/healthCheckWorker", (req, res) => {
+  res.json({
+    message: "Worker is healthy"
+  })
+})
+
 app.post("/prompt", async (req, res) => {
   const prompt = String(req.body.prompt ?? "").trim();
   const projectId = String(req.body.projectId ?? "").trim();
