@@ -17,7 +17,7 @@ COPY apps/backend ./apps/backend
 RUN bun install
 
 # Generate the Prisma client (output lives under packages/db/generated)
-RUN bun run --filter db db:generate
+RUN bun run --filter @bolt/db db:generate
 
 RUN bun run --filter=backend build
 
