@@ -16,8 +16,11 @@ COPY apps/backend ./apps/backend
 
 RUN bun install
 
-# Generate the Prisma client (output lives under packages/db/generated)
-RUN bun run --filter @bolt/db db:generate
+# Generate the Prisma client (output lives under packages/db/generated).
+# prisma.config.ts requires DATABASE_URL via env(), but `generate` never
+# connects, so a throwaway value satisfies it at build time.
+RUN DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder" \
+    bun run --filter @bolt/db db:generate
 
 RUN bun run --filter=backend build
 

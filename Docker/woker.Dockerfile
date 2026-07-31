@@ -18,7 +18,10 @@ RUN bun install
 
 # Generate the Prisma client (output lives under packages/db/generated).
 # The worker runs its TypeScript entrypoint directly, so no build step is needed.
-RUN bun run --filter @bolt/db db:generate
+# prisma.config.ts requires DATABASE_URL via env(), but `generate` never
+# connects, so a throwaway value satisfies it at build time.
+RUN DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder" \
+    bun run --filter @bolt/db db:generate
 
 FROM node:20-alpine AS runner
 
