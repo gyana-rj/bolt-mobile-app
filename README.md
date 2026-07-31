@@ -1,159 +1,111 @@
-# Turborepo starter
+# App Forge
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Turn plain English into production-ready mobile apps.** Describe your idea and App
+Forge generates clean, typed React Native (Expo) code that runs on iOS and Android —
+from first prompt to a live preview you can open on your phone.
 
-## Using this example
+🔗 **Live:** [bolt-mobile-app-frontend.vercel.app](https://bolt-mobile-app-frontend.vercel.app)
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
+## Features
+
+- **Prompt → app.** Describe a mobile app in natural language; an LLM scaffolds the
+  screens, navigation, and state as a real Expo project.
+- **Live in-browser preview.** The generated app runs instantly in the browser via
+  [WebContainers](https://webcontainers.io/) — no local setup.
+- **Open on your phone.** A server-side `expo start --tunnel` session exposes a public
+  `exp://` URL so you can open the app in Expo Go on any network.
+- **Iterate by chat.** Follow-up prompts update the codebase; changes stream back live.
+- **Editable code + export.** Browse the generated files, edit them, or download the
+  project as a ZIP.
+- **Auth built in.** User accounts and sessions via [Clerk](https://clerk.com).
+
+## Tech Stack
+
+| Layer      | Tech                                                          |
+| ---------- | ------------------------------------------------------------ |
+| Frontend   | Next.js 16 · React 19 · Tailwind · WebContainers · Clerk     |
+| Backend    | Express · Bun · Clerk · Prisma                               |
+| Worker     | Express · Bun · Google Gemini · Expo · ngrok tunnels         |
+| Orchestrator | Express · Bun · AWS SDK (EC2 / Auto Scaling)               |
+| Database   | PostgreSQL (Prisma ORM) — Neon in production                 |
+| Monorepo   | Turborepo · Bun workspaces                                   |
+
+## Architecture
+
+App Forge is a Bun + Turborepo monorepo of four services plus a shared DB package:
+
+```mermaid
+flowchart LR
+    U[User] --> FE[Frontend<br/>Next.js · Vercel]
+    FE -->|auth, projects| BE[Backend<br/>Express :9090]
+    FE -->|generate, files, preview| WK[Worker<br/>Express :9091]
+    BE --> DB[(PostgreSQL<br/>Neon)]
+    WK --> DB
+    WK -->|LLM| GEM[Google Gemini]
+    WK -->|expo --tunnel| PH[Phone / Expo Go]
+    ORCH[Worker Orchestrator<br/>Express :9092] -.->|scales EC2 workers| AWS[(AWS EC2 ASG)]
 ```
 
-## What's inside?
+| App / package              | Role                                                             | Port |
+| -------------------------- | --------------------------------------------------------------- | ---- |
+| `apps/frontend`            | Next.js UI — prompt input, code view, WebContainer preview      | 3000 |
+| `apps/backend`             | REST API — projects, prompts, actions; Clerk-verified           | 9090 |
+| `apps/worker`              | Runs LLM generation, writes the project, hosts the Expo tunnel  | 9091 |
+| `apps/worker-orchestrator` | Optional — provisions/scales EC2 worker instances on AWS        | 9092 |
+| `packages/db`              | Prisma schema + generated client (`@bolt/db`)                   | —    |
 
-This Turborepo includes the following packages/apps:
+> **Concurrency note.** The worker is single-tenant by design: it keeps one global Expo
+> tunnel and one workspace directory. The `worker-orchestrator` exists to give each user
+> their own worker instance on AWS. Running a single shared worker (e.g. the free-tier
+> deploy) serves **one active build/preview session at a time**.
 
-### Apps and Packages
+## Quick Start
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+Requires [Bun](https://bun.sh) `>= 1.3.14` and a PostgreSQL database.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+```bash
+git clone https://github.com/gyana-rj/bolt-mobile-app.git
+cd bolt-mobile-app
+bun install
 
-### Utilities
+# start a local Postgres (or use Neon / Supabase)
+docker run -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=bolty_db -d -p 5432:5432 postgres
 
-This Turborepo has some additional tools already setup for you:
+# set up .env files (see CONTRIBUTING.md), then:
+bun run --filter @bolt/db db:generate
+bun run --filter @bolt/db db:migrate
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+bun run dev
 ```
 
-Without global `turbo`, use your package manager:
+Full setup, environment variables, and Docker / Docker Compose instructions are in
+**[CONTRIBUTING.md](./CONTRIBUTING.md)**.
 
-```sh
-cd my-turborepo
-npx turbo build
-bun dlx turbo build
-bun exec turbo build
-```
+## Deployment
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+The app runs on free tiers with the AWS orchestrator disabled:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+- **Frontend** → Vercel (Next.js, native build)
+- **Backend + Worker** → Render (Docker web services)
+- **Database** → Neon (Postgres)
+- **Auth** → Clerk
 
-```sh
-turbo build --filter=docs
-```
+Step-by-step deploy instructions and env vars are in **[DEPLOY.md](./DEPLOY.md)**.
 
-Without global `turbo`:
+## Scripts
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
-```
+| Command                                  | Description                          |
+| ---------------------------------------- | ------------------------------------ |
+| `bun run dev`                            | Run all apps in watch mode (Turbo)   |
+| `bun run build`                          | Build all apps                       |
+| `bun run lint`                           | Lint all packages                    |
+| `bun run check-types`                    | Type-check all packages              |
+| `bun run --filter @bolt/db db:studio`    | Open Prisma Studio                   |
+| `bun run --filter @bolt/db db:migrate`   | Create / apply a migration           |
 
-### Develop
+## Contributing
 
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Contributions are welcome — see **[CONTRIBUTING.md](./CONTRIBUTING.md)** for setup and
+guidelines. Branch off `main`, run `bun run lint` and `bun run check-types`, and open a PR.
