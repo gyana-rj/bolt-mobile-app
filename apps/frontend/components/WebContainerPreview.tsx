@@ -54,6 +54,19 @@ function FreeTierWaitNote({ className = "" }: { className?: string }) {
   );
 }
 
+/** Guidance shown when the preview won't come up, so users can get unstuck. */
+function PreviewTroubleHint({ className = "" }: { className?: string }) {
+  return (
+    <p
+      className={`max-w-sm rounded-md border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-[11px] leading-5 text-zinc-500 ${className}`}
+    >
+      Preview still not showing? Open{" "}
+      <span className="font-medium text-zinc-300">Logs</span> (top-right), copy
+      the output, and paste it into the chat so we can help — or fix it locally.
+    </p>
+  );
+}
+
 interface WebContainerPreviewProps {
   /** Whether the Expo log overlay is visible (controlled from the workspace header). */
   showLogs?: boolean;
@@ -151,8 +164,9 @@ export default function WebContainerPreview({
 
   if (bootError) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-zinc-950 p-8 text-center">
+      <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-zinc-950 p-8 text-center">
         <p className="text-sm text-red-400">{bootError}</p>
+        <PreviewTroubleHint />
       </div>
     );
   }
@@ -224,6 +238,8 @@ export default function WebContainerPreview({
             >
               Show preview anyway
             </button>
+
+            {elapsed > 25 && <PreviewTroubleHint className="mt-1" />}
           </div>
         </div>
       )}
@@ -247,9 +263,12 @@ export default function WebContainerPreview({
               {error ?? status}
             </p>
             {error ? (
-              <p className="mt-1 text-xs text-zinc-500">
-                Something went wrong starting the preview.
-              </p>
+              <>
+                <p className="mt-1 text-xs text-zinc-500">
+                  Something went wrong starting the preview.
+                </p>
+                <PreviewTroubleHint className="mt-3" />
+              </>
             ) : (
               <>
                 <FreeTierWaitNote className="mt-3 text-center" />
