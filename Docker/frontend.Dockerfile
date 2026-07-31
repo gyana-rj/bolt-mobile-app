@@ -16,7 +16,7 @@ COPY /apps/frontend ./apps/frontend
 
 RUN bun install
 
-RUN bun run --filter=frontend build
+RUN bun run --filter=my-app build
 
 FROM node:20-alpine AS runner
 
@@ -28,7 +28,7 @@ ENV PORT=3000
 
 COPY --from=builder /app/apps/frontend/.next/standalone ./
 COPY --from=builder /app/apps/frontend/.next/static ./apps/frontend/.next/static
-COPY --from=builder /app/apps/frontend/public ./app/apps/frontend/public
+COPY --from=builder /app/apps/frontend/public ./apps/frontend/public
 
 EXPOSE 3000
 

@@ -16,7 +16,7 @@ COPY apps/worker-orchestrator ./apps/worker-orchestrator
 
 RUN bun install
 
-RUN bun run --filter=worker-orchestrator build
+# The orchestrator has no build script; it runs its TS entrypoint directly.
 
 FROM node:20-alpine AS runner
 

@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
+import path from "path";
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
+  // Produces .next/standalone (a self-contained server) for the Docker image.
+  // Harmless on Vercel, which ignores it.
+  output: "standalone",
+  // Monorepo: trace deps from the repo root so hoisted workspace packages are
+  // included in the standalone bundle.
+  outputFileTracingRoot: path.join(process.cwd(), "../../"),
   async headers() {
     return [
       {
