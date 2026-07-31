@@ -36,5 +36,5 @@ jobs:
             tags: |
                 ${{ secrets.DOCKERHUB_USERNAME}}/bolty-frontend:latest
                 ${{ secrets.DOCKERHUB_USERNAME}}/bolty-frontend:${{ github.sha }}
-            cache-from: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-frontend:buildcache
-            cache-to: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-frontend:buildcache,mode=max
+            cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-frontend:buildcache
+            cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-frontend:buildcache,mode=max

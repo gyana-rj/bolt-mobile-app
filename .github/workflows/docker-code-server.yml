@@ -32,5 +32,5 @@ jobs:
                 ${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:latest
                 ${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:${{ github.sha }}
 
-            cache-from: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:buildcache
-            cache-to: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:buildcache,mode=max
+            cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:buildcache
+            cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:buildcache,mode=max

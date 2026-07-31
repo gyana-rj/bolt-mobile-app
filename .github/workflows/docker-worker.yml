@@ -36,5 +36,5 @@ jobs:
                 ${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker:latest
                 ${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker:${{ github.sha }}
 
-            cache-from: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker:buildcache
-            cache-to: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker:buildcache,mode=max
+            cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker:buildcache
+            cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker:buildcache,mode=max
