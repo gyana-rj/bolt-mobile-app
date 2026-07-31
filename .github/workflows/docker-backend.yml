@@ -32,7 +32,7 @@ jobs:
           file: Docker/backend.Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/bolty-backend:latest
-            ${{ secrets.DOCKER_USERNAME }}/bolty-backend:${{ github.sha }}
-          cache-from: type=registry, ref=${{ secrets.DOCKER_USERNAME }}/bolty-backend:buildcache
-          cache-to: type=registry, ref=${{ secrets.DOCKER_USERNAME }}/bolty-backend:buildcache, mode=max
+            ${{ secrets.DOCKERHUB_USERNAME}}/bolty-backend:latest
+            ${{ secrets.DOCKERHUB_USERNAME}}/bolty-backend:${{ github.sha }}
+          cache-from: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-backend:buildcache
+          cache-to: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-backend:buildcache, mode=max

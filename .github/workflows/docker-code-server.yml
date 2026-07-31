@@ -29,8 +29,8 @@ jobs:
             file: Docker/code-server.Dockerfile
             push: true
             tags: |
-                ${{ secrets.DOCKER_USERNAME }}/bolty-code-server:latest
-                ${{ secrets.DOCKER_USERNAME }}/bolty-code-server:${{ github.sha }}
+                ${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:latest
+                ${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:${{ github.sha }}
 
-            cache-from: type=registry, ref=${{ secrets.DOCKER_USERNAME }}/bolty-code-server:buildcache
-            cache-to: type=registry, ref=${{ secrets.DOCKER_USERNAME }}/bolty-code-server:buildcache,mode=max
+            cache-from: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:buildcache
+            cache-to: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-code-server:buildcache,mode=max

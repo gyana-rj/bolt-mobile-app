@@ -33,7 +33,7 @@ jobs:
             file: Docker/worker-orchestrator.Dockerfile
             push: true
             tags: |
-                ${{ secrets.DOCKER_USERNAME }}/bolty-worker-orchestrator:latest
-                ${{ secrets.DOCKER_USERNAME }}/bolty-worker-orchestrator:${{ github.sha }}
-            cache-from: type=registry, ref=${{ secrets.DOCKER_USERNAME }}/bolty-worker-orchestrator:buildcache
-            cache-to: type=registry, ref=${{ secrets.DOCKER_USERNAME }}/bolty-worker-orchestrator:buildcache, mode=max
+                ${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker-orchestrator:latest
+                ${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker-orchestrator:${{ github.sha }}
+            cache-from: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker-orchestrator:buildcache
+            cache-to: type=registry, ref=${{ secrets.DOCKERHUB_USERNAME}}/bolty-worker-orchestrator:buildcache, mode=max
