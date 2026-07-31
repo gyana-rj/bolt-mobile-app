@@ -17,6 +17,12 @@ function getProjectDescription(prompt: string) {
   return cleanedDescription || firstLine;
 }
 
+app.get("/healthCheck", (req, res) => {
+  res.json({
+    message: "Backend is healthy"
+  })
+})
+
 app.post("/project", authMiddleware, async (req, res) => {
   const prompt = String(req.body.prompt ?? "").trim();
 

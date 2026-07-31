@@ -48,16 +48,20 @@ Render dashboard → **New → Web Service** → connect this GitHub repo.
 | Dockerfile Path    | `Docker/backend.Dockerfile`             |
 | Docker Build Context Directory | `.` (repo root)             |
 | Instance Type      | **Free**                                |
-| Health Check Path  | `/` (or a known route)                  |
+| Health Check Path  | `/healthCheck`                          |
 
 Environment variables:
 
 ```
 DATABASE_URL      = <Neon pooled url>
-CLERK_SECRET_KEY  = <from Clerk dashboard>
-JWT_PUBLIC_KEY    = <from Clerk: JWKS / PEM public key>
+CLERK_SECRET_KEY  = <from Clerk dashboard, sk_test_... / sk_live_...>
 NODE_ENV          = production
 ```
+
+> `JWT_PUBLIC_KEY` is **not needed**. `middleware.ts` verifies tokens with
+> `secretKey` when it's present and only falls back to `jwtKey` otherwise — so
+> setting `CLERK_SECRET_KEY` is enough. Do **not** put the Clerk *publishable*
+> key here; that's a frontend key (see step 4).
 
 Deploy. Note the public URL, e.g. `https://bolty-backend.onrender.com`.
 
